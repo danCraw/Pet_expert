@@ -19,18 +19,18 @@ CREATE TABLE doctors (
         photo VARCHAR(65) NOT NULL,
         email VARCHAR(65) NOT NULL,
         password_hash VARCHAR(65) NOT NULL,
-        rating VARCHAR(65) NOT NULL,
-        education VARCHAR(65) NOT NULL,
-        treatment_profile VARCHAR(65) NOT NULL,
-        work_experience VARCHAR(65) NOT NULL,
+        rating FLOAT NOT NULL,
+        education VARCHAR(150) NOT NULL,
+        treatment_profile VARCHAR(1000) NOT NULL,
+        work_experience INTEGER NOT NULL,
         PRIMARY KEY (doctor_id)
 );
 
 CREATE TABLE visits (
     visit_id SERIAL NOT NULL,
     diagnosis VARCHAR(65) NOT NULL,
-    dignity VARCHAR(65) NOT NULL,
-    flaws VARCHAR(65) NOT NULL,
+    dignity VARCHAR(1000) NOT NULL,
+    flaws VARCHAR(1000) NOT NULL,
     photos VARCHAR(65)[] NOT NULL,
     date_of_receipt DATE NOT NULL,
     phone VARCHAR(65) NOT NULL,
@@ -55,6 +55,7 @@ CREATE TABLE hospitals (
 CREATE TABLE reviews (
     review_id SERIAL NOT NULL,
     client_name VARCHAR(65) NOT NULL,
+    text VARCHAR(2000) NOT NULL,
     visit_id INTEGER NOT NULL,
     confirmed BOOLEAN NOT NULL,
     hospital_id INTEGER NOT NULL,
@@ -80,7 +81,7 @@ CREATE TABLE filial (
     FOREIGN KEY (filial_id) REFERENCES hospitals (hospital_id) ON DELETE CASCADE
 );
 
-CREATE TABLE address (
+CREATE TABLE addresses (
     address_id SERIAL NOT NULL,
     hospital_id INTEGER NOT NULL,
     city VARCHAR(65) NOT NULL,
@@ -104,11 +105,12 @@ CREATE TABLE services (
 
 CREATE TABLE work_day (
     work_day_id SERIAL NOT NULL,
-    service_id INTEGER NOT NULL,
+    service_id INTEGER,
     start_time TIME NOT NULL,
     end_time TIME NOT NULL,
     time_range INTERVAL NOT null,
-    PRIMARY KEY (work_day_id )
+    PRIMARY KEY (work_day_id ),
+    FOREIGN KEY (service_id) REFERENCES services (service_id) ON DELETE SET NULL
 );
 
 CREATE TABLE doctor_service (
@@ -150,7 +152,7 @@ CREATE TABLE course (
     course_id SERIAL NOT NULL,
     name VARCHAR(65) NOT NULL,
     description VARCHAR(150) NOT NULL,
-    photo VARCHAR(150) NOT NULL,
+    photos VARCHAR(150)[] NOT NULL,
     doctor_id INTEGER NOT NULL,
     FOREIGN KEY (doctor_id) REFERENCES doctors (doctor_id) ON DELETE CASCADE
 );

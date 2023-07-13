@@ -6,7 +6,6 @@ Visit = Table(
                 'visits',
                 metadata,
                 Column("visit_id", Integer, primary_key=True),
-                Column("rating", Integer, nullable=False),
                 Column("diagnosis", String(65), nullable=False),
                 Column("dignity", String(1000), nullable=False),
                 Column("flaws", String(1000), nullable=False),

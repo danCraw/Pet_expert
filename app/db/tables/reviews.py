@@ -11,6 +11,7 @@ Review = Table(
                 metadata,
                 Column("review_id", Integer, primary_key=True),
                 Column("client_name", String(65), nullable=False),
+                Column("text", String(2000), nullable=False),
                 Column("visit_id", Integer, ForeignKey(Visit.visit_id), nullable=False),
                 Column("confirmed", Boolean, nullable=False),
                 Column("hospital_id", Integer, ForeignKey(Hospital.hospital_id), nullable=False),

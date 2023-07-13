@@ -1,5 +1,4 @@
 from sqlalchemy import Column, String, Table, Integer
-from sqlalchemy.dialects.postgresql import UUID
 
 from app.db.base import metadata
 
