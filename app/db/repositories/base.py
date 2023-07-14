@@ -7,8 +7,7 @@ import sqlalchemy
 from asyncpg import Record
 
 from app.db.base import database
-from app.models.base import BaseIdSchema
-from app.models.employee import BaseSchema
+from app.models.base import BaseIdSchema, BaseSchema
 
 
 class BaseRepository(abc.ABC):
