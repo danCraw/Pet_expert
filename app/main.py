@@ -20,7 +20,7 @@ def get_application() -> FastAPI:
     application.add_event_handler("shutdown", create_stop_app_handler())
 
     application.include_router(api.api_router, prefix=config.API_V1_STR)
-    application.include_router(api.employees_router, prefix=config.API_V1_STR)
+    application.include_router(api.pet_expert_router, prefix=config.API_V1_STR)
 
     return application
 

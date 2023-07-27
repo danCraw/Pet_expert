@@ -7,7 +7,6 @@ from app.models.base import BaseSchema
 class HospitalBase(BaseSchema):
     name: str
     description: str
-    flaws: str
     photos: list[str]
     date_of_receipt: datetime
     phone: str

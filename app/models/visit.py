@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date
 from typing import Optional
 
 from app.models.base import BaseSchema
@@ -6,13 +6,11 @@ from app.models.base import BaseSchema
 
 class VisitBase(BaseSchema):
     diagnosis: str
-    dignity: str
-    flaws: str
+    client_id: int
     photos: list[str]
-    date_of_receipt: datetime
-    phone: str
+    date_of_receipt: date
     pet_name: str
-    pet_age: str
+    pet_age: int
     pet_breed: str
     pet_type: str
 
@@ -23,4 +21,3 @@ class VisitIn(VisitBase):
 
 class VisitOut(VisitBase):
     visit_id: int
-

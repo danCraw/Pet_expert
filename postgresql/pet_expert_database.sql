@@ -27,18 +27,18 @@ CREATE TABLE doctors (
 );
 
 CREATE TABLE visits (
-    visit_id SERIAL NOT NULL,
+    visit_id SERIAL,
+    client_id INTEGER NOT NULL,
     diagnosis VARCHAR(65) NOT NULL,
-    dignity VARCHAR(1000) NOT NULL,
-    flaws VARCHAR(1000) NOT NULL,
     photos VARCHAR(65)[] NOT NULL,
     date_of_receipt DATE NOT NULL,
-    phone VARCHAR(65) NOT NULL,
     pet_name VARCHAR(65) NOT NULL,
     pet_age INTEGER NOT NULL,
     pet_breed VARCHAR(65) NOT NULL,
     pet_type VARCHAR(65) NOT NULL,
-    PRIMARY KEY (visit_id)
+    PRIMARY KEY (visit_id),
+    FOREIGN KEY (client_id) REFERENCES clients (client_id) ON DELETE CASCADE
+
 );
 
 CREATE TABLE hospitals (
@@ -54,24 +54,25 @@ CREATE TABLE hospitals (
 
 CREATE TABLE reviews (
     review_id SERIAL NOT NULL,
-    client_name VARCHAR(65) NOT NULL,
-    text VARCHAR(2000) NOT NULL,
     visit_id INTEGER NOT NULL,
-    confirmed BOOLEAN NOT NULL,
     hospital_id INTEGER NOT NULL,
     doctor_id INTEGER NOT NULL,
-    client_id INTEGER NOT NULL,
+    liked VARCHAR (2000) NOT NULL,
+    did_not_liked VARCHAR (2000) NOT NULL,
+    comment VARCHAR (2000) NOT NULL,
+    review_time TIMESTAMP NOT NULL,
+    confirmed BOOLEAN NOT NULL,
     PRIMARY KEY (review_id),
     FOREIGN KEY (hospital_id) REFERENCES hospitals (hospital_id) ON DELETE CASCADE,
     FOREIGN KEY (doctor_id) REFERENCES doctors (doctor_id) ON DELETE CASCADE,
-    FOREIGN KEY (client_id) REFERENCES clients (client_id) ON DELETE CASCADE
+    FOREIGN KEY (visit_id) REFERENCES visits (visit_id) ON DELETE CASCADE
 );
 
-CREATE TABLE response (
+CREATE TABLE reply (
     review_id INTEGER NOT NULL,
-    response_review_id INTEGER NOT NULL,
+    reply_review_id INTEGER NOT NULL,
     FOREIGN KEY (review_id) REFERENCES reviews (review_id) ON DELETE CASCADE,
-    FOREIGN KEY (response_review_id) REFERENCES reviews (review_id) ON DELETE CASCADE
+    FOREIGN KEY (reply_review_id) REFERENCES reviews (review_id) ON DELETE CASCADE
 );
 
 CREATE TABLE filial (
@@ -132,7 +133,7 @@ CREATE TABLE doctor_hospital (
     FOREIGN KEY (doctor_id) REFERENCES doctors (doctor_id) ON DELETE CASCADE
 );
 
-CREATE TABLE favourite_doctors (
+CREATE TABLE favorite_doctors (
     client_id INTEGER NOT NULL,
     doctor_id INTEGER NOT NULL,
     PRIMARY KEY (client_id, doctor_id),
@@ -140,7 +141,7 @@ CREATE TABLE favourite_doctors (
     FOREIGN KEY (doctor_id) REFERENCES doctors (doctor_id) ON DELETE CASCADE
 );
 
-CREATE TABLE favourite_hospitals (
+CREATE TABLE favorite_hospitals (
     client_id INTEGER NOT NULL,
     hospital_id INTEGER NOT NULL,
     PRIMARY KEY (client_id, hospital_id),

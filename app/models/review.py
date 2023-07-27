@@ -1,15 +1,18 @@
 from typing import Optional
-
+from datetime import datetime
 from app.models.base import BaseSchema
 
 
 class ReviewBase(BaseSchema):
-    client_name: str
     visit_id: int
-    confirmed: bool
     hospital_id: int
     doctor_id: int
     client_id: int
+    liked: str
+    did_not_liked: str
+    comment: str
+    review_time: datetime
+    confirmed: bool
 
 
 class ReviewIn(ReviewBase):

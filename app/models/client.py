@@ -8,16 +8,21 @@ class ClientBase(BaseSchema):
     surname: str
     patronomic: str
     photo: str
+    phone: str
     email: str
-    password_hash: str
+    password: Optional[str]
 
 
-class ClientIn(ClientBase):
+class ClientIn(ClientBase, extra='allow'):
     client_id: Optional[int]
 
 
 class ClientOut(ClientBase):
     client_id: int
 
-
-
+    class Config:
+        fields = {
+            'some_flag': {
+                'exclude': {'password'}
+            }
+        }

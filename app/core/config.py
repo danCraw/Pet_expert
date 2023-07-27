@@ -13,12 +13,9 @@ class GlobalConfig(BaseSettings):
     ENVIRONMENT: str = os.environ.get("ENVIRONMENT", "DEV")
     API_V1_STR: str = "/api/v1"
 
-    POSITIONS = ('senior', 'middle', 'junior')
-    DEPARTMENTS = ('testing', 'backend', 'frontend')
-
     # Database config
     DATABASE_URL: Optional[PostgresDsn] = os.environ.get(
-        "DATABASE_URL", "postgresql+asyncpg://postgres:postgres@postgres:5432/empl"
+        "DATABASE_URL", "postgresql+asyncpg://postgres:postgres@0.0.0.0:5432/pet_expert"
     )
     DB_MIN_SIZE: int = 2
     DB_MAX_SIZE: int = 15
