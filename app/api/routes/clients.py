@@ -11,6 +11,8 @@ from app.db.repositories.favorite_doctor import FavoriteDoctorsRepository
 from app.db.repositories.favourite_hospital import FavoriteHospitalsRepository
 from app.models.client import ClientIn, ClientOut
 from app.models.doctor import DoctorOut
+from app.models.favorite_doctor import FavouriteDoctor
+from app.models.favorite_hospital import FavouriteHospital
 from app.models.hospital import HospitalOut
 
 router = APIRouter()
@@ -61,7 +63,6 @@ async def create_client(client: ClientIn, client_repo: ClientRepository = Depend
 @inject
 async def update_client(client: ClientIn, client_repo: ClientRepository = Depends(
                               Provide[Container.clients])) -> ClientOut:
-    client.approved = False
     client = await client_repo.update(client)
     if client:
         return client
@@ -80,38 +81,23 @@ async def delete_client(client_id: int, client_repo: ClientRepository = Depends(
         raise HTTPException(status_code=UNPROCESSABLE_ENTITY, detail="client with the given Id not found")
 
 
+@router.post("/favorite_hospitals/{client_id}")
+@inject
+async def add_hospital_to_favourite(favourite_hospital: FavouriteHospital,
+                                    favorite_hospitals_repo: FavoriteHospitalsRepository = Depends(Provide[Container.favorite_hospitals]),
+                                    client_repo: ClientRepository = Depends(Provide[Container.clients])
+                                    ) -> FavouriteHospital:
+    favourite_hospital = await client_repo.add_hospital_to_favorite(favourite_hospital, favorite_hospitals_repo)
+    if favourite_hospital:
+        return favourite_hospital
+    else:
+        raise HTTPException(status_code=UNPROCESSABLE_ENTITY, detail="error in adding hospital to favourite")
+
+
 @router.get("/favorite_hospitals/{client_id}")
 @inject
 async def favorite_hospitals(client_id: int,
-                             hospitals_repo: FavoriteDoctorsRepository = Depends(Provide[Container.hospitals]),
-                             favorite_hospitals_repo: FavoriteDoctorsRepository = Depends(Provide[Container.favorite_hospitals]),
-                             client_repo: ClientRepository = Depends(Provide[Container.clients])
-                             ) -> list[HospitalOut]:
-    hospitals = await client_repo.get_favorite_hospitals(client_id, hospitals_repo, favorite_hospitals_repo._table)
-    if hospitals:
-        return hospitals
-    else:
-        raise HTTPException(status_code=UNPROCESSABLE_ENTITY, detail="client with the given Id not found")
-
-
-@router.post("/favorite_hospitals/{client_id}")
-@inject
-async def favorite_hospitals(client_id: int,
-                             hospitals_repo: FavoriteDoctorsRepository = Depends(Provide[Container.hospitals]),
-                             favorite_hospitals_repo: FavoriteDoctorsRepository = Depends(Provide[Container.favorite_hospitals]),
-                             client_repo: ClientRepository = Depends(Provide[Container.clients])
-                             ) -> list[HospitalOut]:
-    hospitals = await client_repo.get_favorite_hospitals(client_id, hospitals_repo, favorite_hospitals_repo._table)
-    if hospitals:
-        return hospitals
-    else:
-        raise HTTPException(status_code=UNPROCESSABLE_ENTITY, detail="client with the given Id not found")
-
-
-@router.delete("/favorite_hospitals/{client_id}")
-@inject
-async def favorite_hospitals(client_id: int,
-                             hospitals_repo: FavoriteDoctorsRepository = Depends(Provide[Container.hospitals]),
+                             hospitals_repo: HospitalRepository = Depends(Provide[Container.hospitals]),
                              favorite_hospitals_repo: FavoriteDoctorsRepository = Depends(Provide[Container.favorite_hospitals]),
                              client_repo: ClientRepository = Depends(Provide[Container.clients])
                              ) -> list[HospitalOut]:

@@ -39,6 +39,8 @@ async def one_hospital(hospital_id: int, hospital_repo: HospitalRepository = Dep
 @inject
 async def create_hospital(hospital: HospitalIn, hospital_repo: HospitalRepository = Depends(
                               Provide[Container.hospitals])) -> HospitalOut:
+    hospital.password_hash = str(hash(hospital.password))
+    hospital.password = None
     hospital = await hospital_repo.create(hospital)
     return hospital
 

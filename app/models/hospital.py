@@ -8,16 +8,23 @@ class HospitalBase(BaseSchema):
     name: str
     description: str
     photos: list[str]
-    date_of_receipt: datetime
     phone: str
     email: str
-    password_hash: str
+    password: Optional[str]
 
 
-class HospitalIn(HospitalBase):
+class HospitalIn(HospitalBase, extra='allow'):
     hospital_id: Optional[int]
 
 
 class HospitalOut(HospitalBase):
     hospital_id: int
+
+    class Config:
+        fields = {
+            'some_flag': {
+                'exclude': {'password'}
+            }
+        }
+
 
