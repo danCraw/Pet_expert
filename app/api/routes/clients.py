@@ -108,6 +108,18 @@ async def favorite_hospitals(client_id: int,
         raise HTTPException(status_code=UNPROCESSABLE_ENTITY, detail="client with the given Id not found")
 
 
+@router.post("/favorite_doctors/{client_id}")
+@inject
+async def add_doctor_to_favourite(favourite_doctor: FavouriteDoctor,
+                                  favorite_doctors_repo: FavoriteDoctorsRepository = Depends(Provide[Container.favorite_doctors]),
+                                  client_repo: ClientRepository = Depends(Provide[Container.clients])) -> list[DoctorOut]:
+    doctors = await client_repo.add_doctor_to_favorite(favourite_doctor, favorite_doctors_repo)
+    if doctors:
+        return doctors
+    else:
+        raise HTTPException(status_code=UNPROCESSABLE_ENTITY, detail="client with the given Id not found")
+
+
 @router.get("/favorite_doctors/{client_id}")
 @inject
 async def favorite_doctors(client_id: int,
@@ -115,11 +127,10 @@ async def favorite_doctors(client_id: int,
                            favorite_doctors_repo: FavoriteDoctorsRepository = Depends(Provide[Container.favorite_doctors]),
                            client_repo: ClientRepository = Depends(Provide[Container.clients])) -> list[DoctorOut]:
     doctors = await client_repo.get_favorite_doctors(client_id, doctors_repo, favorite_doctors_repo._table)
-    if doctors:
+    if doctors is not None:
         return doctors
     else:
         raise HTTPException(status_code=UNPROCESSABLE_ENTITY, detail="client with the given Id not found")
-
 
 container = Container()
 container.wire(modules=[sys.modules[__name__]])

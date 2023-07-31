@@ -9,17 +9,23 @@ class DoctorBase(BaseSchema):
     patronomic: str
     photo: str
     email: str
-    password_hash: str
+    password: Optional[str]
     rating: float
     education: str
     treatment_profile: str
-    work_experience: str
+    work_experience: float
 
 
-class DoctorIn(DoctorBase):
+class DoctorIn(DoctorBase, extra='allow'):
     doctor_id: Optional[int]
 
 
 class DoctorOut(DoctorBase):
     doctor_id: int
 
+    class Config:
+        fields = {
+            'some_flag': {
+                'exclude': {'password'}
+            }
+        }

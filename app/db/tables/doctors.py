@@ -15,5 +15,5 @@ Doctor = Table(
                 Column("rating", Float, nullable=False),
                 Column("education", String(150), nullable=False),
                 Column("treatment_profile", String(1000), nullable=False),
-                Column("work_experience", Integer, nullable=False)
+                Column("work_experience", Float, nullable=False)
 )
