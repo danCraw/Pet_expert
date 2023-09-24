@@ -1,7 +1,9 @@
 import os
 from typing import Optional
-
+from dotenv import load_dotenv
 from pydantic import BaseSettings, PostgresDsn
+
+load_dotenv()
 
 
 class GlobalConfig(BaseSettings):
@@ -9,13 +11,19 @@ class GlobalConfig(BaseSettings):
     DEBUG: bool = False
     TESTING: bool = False
     TIMEZONE: str = "UTC"
-    SERVICE_NAME = "AppService"
+    SERVICE_NAME = "PetExpert"
     ENVIRONMENT: str = os.environ.get("ENVIRONMENT", "DEV")
     API_V1_STR: str = "/api/v1"
 
     # Database config
+    DB_NAME: str = os.environ.get("DB_NAME")
+    DB_HOST: str = os.environ.get("DB_HOST")
+    DB_PORT: str = os.environ.get("DB_PORT")
+    DB_USER: str = os.environ.get("DB_PORT")
+    DB_PASSWORD: str = os.environ.get("DB_PORT")
     DATABASE_URL: Optional[PostgresDsn] = os.environ.get(
-        "DATABASE_URL", "postgresql+asyncpg://postgres:postgres@0.0.0.0:5432/pet_expert"
+        "DATABASE_URL",
+        "postgresql+asyncpg://" + DB_USER + ":" + "DB_PASSWORD" + "@" + "DB_HOST" + ":" + "DB_PORT" + "/" + "DB_NAME"
     )
     DB_MIN_SIZE: int = 2
     DB_MAX_SIZE: int = 15
