@@ -54,8 +54,9 @@ async def one_client(client_id: int, client_repo: ClientRepository = Depends(
 
 @router.post("/")
 @inject
-async def create_client(client: ClientIn, client_repo: ClientRepository = Depends(
-    Provide[Container.clients])) -> ClientOut:
+async def create_client(client: ClientIn,
+                        client_repo: ClientRepository = Depends(Provide[Container.clients])
+                        ) -> ClientOut:
     client.password_hash = str(hash(client.password))
     client.password = None
     client = await client_repo.create(client)
