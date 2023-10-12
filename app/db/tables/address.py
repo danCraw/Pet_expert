@@ -6,7 +6,7 @@ from app.db.tables.hospitals import Hospital
 Address = Table(
                 'addresses',
                 metadata,
-                Column("address_id", Integer, primary_key=True),
+                Column("id", Integer, primary_key=True),
                 Column("hospital_id", Integer, ForeignKey(Hospital.hospital_id), nullable=False),
                 Column("city", String(65), nullable=False),
                 Column("street", String(65), nullable=False),

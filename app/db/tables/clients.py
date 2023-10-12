@@ -5,7 +5,7 @@ from app.db.base import metadata
 Client = Table(
                 'clients',
                 metadata,
-                Column("client_id", Integer, primary_key=True),
+                Column("id", Integer, primary_key=True),
                 Column("name", String(65), nullable=False),
                 Column("surname", String(65), nullable=False),
                 Column("patronomic", String(65), nullable=False),

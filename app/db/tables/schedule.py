@@ -8,12 +8,12 @@ from app.db.tables.work_day import Work_day
 Course = Table(
                 'schedule',
                 metadata,
-                Column("schedule_id", Integer, primary_key=True),
+                Column("id", Integer, primary_key=True),
                 Column("doctor_id", Integer, nullable=False),
                 Column("day_of_week_id", Integer, nullable=False),
                 Column("work_day_id", Integer, nullable=False),
                 Column("doctor_id", Integer, nullable=False),
-                Column("doctor_id", Integer, ForeignKey(Doctor.doctor_id), nullable=False),
-                Column("day_of_week_id", Integer, ForeignKey(Day_of_week.doctor_id), nullable=False),
-                Column("work_day_id", Integer, ForeignKey(Work_day.doctor_id), nullable=False)
+                Column("doctor_id", Integer, ForeignKey(Doctor.id), nullable=False),
+                Column("day_of_week_id", Integer, ForeignKey(Day_of_week.id), nullable=False),
+                Column("work_day_id", Integer, ForeignKey(Work_day.id), nullable=False)
 )

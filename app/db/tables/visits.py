@@ -5,8 +5,8 @@ from app.db.base import metadata
 Visit = Table(
     'visits',
     metadata,
-    Column("visit_id", Integer, primary_key=True, nullable=True),
-    Column("client_id", Integer, ForeignKey('clients.client_id'), nullable=False),
+    Column("id", Integer, primary_key=True, nullable=True),
+    Column("client_id", Integer, ForeignKey('clients.id'), nullable=False),
     Column("diagnosis", String(65), nullable=False),
     Column("photos", ARRAY(String(65)), nullable=False),
     Column("date_of_receipt", Date, nullable=False),

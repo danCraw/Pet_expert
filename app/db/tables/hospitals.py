@@ -5,7 +5,7 @@ from app.db.base import metadata
 Hospital = Table(
                 'hospitals',
                 metadata,
-                Column("hospital_id", Integer, primary_key=True),
+                Column("id", Integer, primary_key=True),
                 Column("name", String(65), nullable=False),
                 Column("description", String(65), nullable=False),
                 Column("photos", ARRAY(String(65)), nullable=False),

@@ -142,23 +142,23 @@ async def favorite_doctors(client_id: int,
         raise HTTPException(status_code=UNPROCESSABLE_ENTITY, detail="client with the given Id not found")
 
 
-@router.post("/reviews/{client_id}")
-@inject
-async def user_reviews(client_id: int,
-                       review_repo: ReviewRepository = Depends(Provide[Container.reviews]),
-                       visit_repo: VisitRepository = Depends(Provide[Container.visits]),
-                       doctor_repo: DoctorRepository = Depends(Provide[Container.doctors]),
-                       hospital_repo: HospitalRepository = Depends(Provide[Container.hospitals]),
-                       client_repo: ClientRepository = Depends(Provide[Container.clients])
-                       ) -> list[DoctorOut]:
-    review = await client_repo.get_reviews(
-        client_id,
-        review_repo,
-        visit_repo._table,
-        doctor_repo._table,
-        hospital_repo._table
-    )
-    return review
+# @router.post("/reviews/{client_id}")
+# @inject
+# async def user_reviews(client_id: int,
+#                        review_repo: ReviewRepository = Depends(Provide[Container.reviews]),
+#                        visit_repo: VisitRepository = Depends(Provide[Container.visits]),
+#                        doctor_repo: DoctorRepository = Depends(Provide[Container.doctors]),
+#                        hospital_repo: HospitalRepository = Depends(Provide[Container.hospitals]),
+#                        client_repo: ClientRepository = Depends(Provide[Container.clients])
+#                        ) -> list[DoctorOut]:
+#     review = await client_repo.get_reviews(
+#         client_id,
+#         review_repo,
+#         visit_repo._table,
+#         doctor_repo._table,
+#         hospital_repo._table
+#     )
+#     return review
 
 
 container = Container()

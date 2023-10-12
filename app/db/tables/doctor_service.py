@@ -10,6 +10,6 @@ Doctor_service = Table(
                 Column("doctor_id", Integer, primary_key=True),
                 Column("service_id", Integer, nullable=False),
                 Column("price", Integer, nullable=False),
-                Column("service_id", Integer, ForeignKey(Service.service_id), nullable=False),
-                Column("doctor_id", Integer, ForeignKey(Doctor.service_id), nullable=False)
+                Column("service_id", Integer, ForeignKey(Service.id), nullable=False),
+                Column("doctor_id", Integer, ForeignKey(Doctor.id), nullable=False)
 )

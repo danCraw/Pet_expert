@@ -6,7 +6,7 @@ from app.db.tables.doctors import Doctor
 Course = Table(
                 'courses',
                 metadata,
-                Column("course_id", Integer, primary_key=True),
+                Column("id", Integer, primary_key=True),
                 Column("name", Integer, nullable=False),
                 Column("description", String(150), nullable=False),
                 Column("photos", ARRAY(String(150)), nullable=False),

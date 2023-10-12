@@ -14,11 +14,11 @@ class ClientBase(BaseSchema):
 
 
 class ClientIn(ClientBase, extra='allow'):
-    client_id: Optional[int]
+    id: Optional[int]
 
 
 class ClientOut(ClientBase):
-    client_id: int
+    id: int
 
     class Config:
         fields = {
