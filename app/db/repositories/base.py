@@ -37,7 +37,9 @@ class BaseRepository(abc.ABC):
 
     def _preprocess_create(self, values: Dict) -> Dict:
         if values.get(self._table.c[0].description, None) is None:
-            values.pop(self._table.c[0].description) # removing None id
+            values.pop(self._table.c[0].description)  # removing None id
+        if values.get('password', None) is None:
+            values.pop('password')
         return values
 
     async def _list(self) -> List[Record]:

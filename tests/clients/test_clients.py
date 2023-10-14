@@ -59,7 +59,9 @@ async def test_update(db_connection, db_client: ClientIn):
                               email="update_email",
                               )
     client_after_update = await update_client(updated_client)
-    assert client_after_update == updated_client
+    updated_client.password_hash = str(hash(updated_client.password))
+    assert client_after_update == ClientOut(**updated_client.dict())
+
 
 @pytest.mark.asyncio
 async def test_update_wrong_id(client: ClientIn):

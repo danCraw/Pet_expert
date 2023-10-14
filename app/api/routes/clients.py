@@ -67,7 +67,10 @@ async def create_client(client: ClientIn,
 @inject
 async def update_client(client: ClientIn, client_repo: ClientRepository = Depends(
     Provide[Container.clients])) -> ClientOut:
-    client = await client_repo.update(client)
+    if client.password:
+        client.password_hash = str(hash(client.password))
+        client.password = None
+    client = await client_repo.update(client.dict(exclude_none=True))
     if client:
         return client
     else:
