@@ -50,11 +50,11 @@ class ClientRepository(BaseRepository):
                                      ) -> list[HospitalOut]:
         rows = await hospitals_repo._db.fetch_all(hospitals_repo._table.select()
                                                   .join(favourite_hospitals_table,
-                                                        hospitals_repo._table.c.hospital_id == favourite_hospitals_table.c.hospital_id,
+                                                        hospitals_repo._table.c.id == favourite_hospitals_table.c.hospital_id,
                                                         isouter=True)
-                                                  .where(favourite_hospitals_table.c.client_id == client_id)
+                                                  .where(favourite_hospitals_table.c.hospital_id == client_id)
                                                   .with_only_columns(
-                                                        hospitals_repo._table.c.hospital_id,
+                                                        hospitals_repo._table.c.id,
                                                         hospitals_repo._table.c.name,
                                                         hospitals_repo._table.c.description,
                                                         hospitals_repo._table.c.photos,

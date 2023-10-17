@@ -14,11 +14,11 @@ class HospitalBase(BaseSchema):
 
 
 class HospitalIn(HospitalBase, extra='allow'):
-    hospital_id: Optional[int]
+    id: Optional[int]
 
 
 class HospitalOut(HospitalBase):
-    hospital_id: int
+    id: int
 
     class Config:
         fields = {
