@@ -17,11 +17,11 @@ class DoctorBase(BaseSchema):
 
 
 class DoctorIn(DoctorBase, extra='allow'):
-    doctor_id: Optional[int]
+    id: Optional[int]
 
 
 class DoctorOut(DoctorBase):
-    doctor_id: int
+    id: int
 
     class Config:
         fields = {

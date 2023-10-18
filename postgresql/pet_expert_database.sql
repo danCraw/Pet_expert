@@ -22,7 +22,7 @@ CREATE TABLE doctors (
         rating FLOAT NOT NULL,
         education VARCHAR(150) NOT NULL,
         treatment_profile VARCHAR(1000) NOT NULL,
-        work_experience INTEGER NOT NULL,
+        work_experience FLOAT NOT NULL,
         PRIMARY KEY (id)
 );
 

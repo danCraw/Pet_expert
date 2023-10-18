@@ -76,11 +76,11 @@ class ClientRepository(BaseRepository):
                                    ) -> list[DoctorOut]:
         rows = await doctors_repo._db.fetch_all(doctors_repo._table.select()
         .join(favourite_doctors_table,
-              doctors_repo._table.c.doctor_id == favourite_doctors_table.c.doctor_id,
+              doctors_repo._table.c.id == favourite_doctors_table.c.doctor_id,
               isouter=True)
         .where(favourite_doctors_table.c.client_id == client_id)
         .with_only_columns(
-              doctors_repo._table.c.doctor_id,
+              doctors_repo._table.c.id,
               doctors_repo._table.c.name,
               doctors_repo._table.c.surname,
               doctors_repo._table.c.patronomic,

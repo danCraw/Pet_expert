@@ -1,14 +1,19 @@
 import pytest
 
 from app.api.routes.clients import create_client, one_client, delete_client, update_client, add_hospital_to_favourite, \
-    favorite_hospitals
+    favorite_hospitals, add_doctor_to_favourite, favorite_doctors
 from app.models.client import ClientIn, ClientOut
+from app.models.doctor import DoctorIn, DoctorOut
+from app.models.favorite_doctor import FavouriteDoctor
 from app.models.favorite_hospital import FavouriteHospital
 from app.models.hospital import HospitalIn, HospitalOut
 from tests.db.clients.data import db_client
 from tests.db.hospitals.data import db_hospital
+from tests.db.doctors.data import db_doctor
 from tests.db.connection import db_connection
 from tests.hospitals import hospital
+from tests.doctors import doctor
+
 
 @pytest.fixture
 def client() -> ClientIn:
@@ -67,3 +72,13 @@ async def test_add_hospital_to_favourite(db_client: ClientIn, db_hospital: Hospi
 
     test_favorite_hospitals = await favorite_hospitals(client_id=db_client.id)
     assert test_favorite_hospitals == [HospitalOut(**db_hospital.dict())]
+
+
+@pytest.mark.asyncio
+async def test_add_doctor_to_favourite(db_client: ClientIn, db_doctor: DoctorIn):
+    test_favourite_doctor = FavouriteDoctor(doctor_id=db_doctor.id, client_id=db_client.id)
+    response = await add_doctor_to_favourite(test_favourite_doctor)
+    assert response == test_favourite_doctor
+
+    test_favorite_doctors = await favorite_doctors(client_id=db_client.id)
+    assert test_favorite_doctors == [DoctorOut(**db_doctor.dict())]

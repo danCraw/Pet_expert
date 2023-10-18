@@ -2,8 +2,6 @@ import pytest_asyncio
 
 from app.api.routes.hospitals import delete_hospital, create_hospital
 from app.models.hospital import HospitalIn, HospitalOut
-from tests.hospitals import hospital
-from tests.db.connection import db_connection
 
 
 @pytest_asyncio.fixture
