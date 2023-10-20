@@ -23,6 +23,7 @@ CREATE TABLE doctors (
         education VARCHAR(150) NOT NULL,
         treatment_profile VARCHAR(1000) NOT NULL,
         work_experience FLOAT NOT NULL,
+        approved BOOLEAN NOT NULL,
         PRIMARY KEY (id)
 );
 
@@ -49,6 +50,7 @@ CREATE TABLE hospitals (
     phone VARCHAR(65),
     email VARCHAR(65) NOT NULL,
     password_hash VARCHAR(65) NOT null,
+    approved BOOLEAN NOT NULL,
     PRIMARY KEY (id)
 );
 

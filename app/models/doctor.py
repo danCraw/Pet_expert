@@ -14,6 +14,7 @@ class DoctorBase(BaseSchema):
     education: str
     treatment_profile: str
     work_experience: float
+    approved: bool
 
 
 class DoctorIn(DoctorBase, extra='allow'):

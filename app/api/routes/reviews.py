@@ -55,5 +55,15 @@ async def reply_to_review(review_id: int, review: ReviewIn,
     return review
 
 
+@inject
+async def delete_review(review_id: int, review_repo: ReviewRepository = Depends(
+    Provide[Container.clients])) -> list[ReviewOut]:
+    review = await review_repo.delete(review_id)
+    if review:
+        return review
+    else:
+        raise HTTPException(status_code=UNPROCESSABLE_ENTITY, detail="review with the given Id not found")
+
+
 container = Container()
 container.wire(modules=[sys.modules[__name__]])

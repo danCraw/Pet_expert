@@ -53,6 +53,9 @@ async def create_doctor(doctor: DoctorIn, doctor_repo: DoctorRepository = Depend
 @inject
 async def update_doctor(doctor: DoctorIn, doctor_repo: DoctorRepository = Depends(
                               Provide[Container.doctors])) -> DoctorOut:
+    if doctor.password:
+        doctor.password_hash = str(hash(doctor.password))
+        doctor.password = None
     doctor.approved = False
     doctor = await doctor_repo.update(doctor)
     if doctor:

@@ -7,12 +7,12 @@ from app.models.doctor import DoctorIn, DoctorOut
 from app.models.favorite_doctor import FavouriteDoctor
 from app.models.favorite_hospital import FavouriteHospital
 from app.models.hospital import HospitalIn, HospitalOut
+from tests.db.connection import db_connection
 from tests.db.clients.data import db_client
 from tests.db.hospitals.data import db_hospital
 from tests.db.doctors.data import db_doctor
-from tests.db.connection import db_connection
-from tests.hospitals import hospital
-from tests.doctors import doctor
+from tests.test_api.test_routes.test_doctors import doctor
+from tests.test_api.test_routes.test_hospitals import hospital
 
 
 @pytest.fixture

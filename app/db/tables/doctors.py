@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Table, Integer, Float
+from sqlalchemy import Column, String, Table, Integer, Float, Boolean
 
 from app.db.base import metadata
 
@@ -15,5 +15,6 @@ Doctor = Table(
                 Column("rating", Float, nullable=False),
                 Column("education", String(150), nullable=False),
                 Column("treatment_profile", String(1000), nullable=False),
-                Column("work_experience", Float, nullable=False)
+                Column("work_experience", Float, nullable=False),
+                Column("approved", Boolean, nullable=False)
 )

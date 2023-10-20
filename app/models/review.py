@@ -16,9 +16,9 @@ class ReviewBase(BaseSchema):
 
 
 class ReviewIn(ReviewBase):
-    review_id: Optional[int]
+    id: Optional[int]
 
 
 class ReviewOut(ReviewBase):
-    review_id: int
+    id: int
 

@@ -49,6 +49,9 @@ async def create_hospital(hospital: HospitalIn, hospital_repo: HospitalRepositor
 @inject
 async def update_hospital(hospital: HospitalIn, hospital_repo: HospitalRepository = Depends(
                               Provide[Container.hospitals])) -> HospitalOut:
+    if hospital.password:
+        hospital.password_hash = str(hash(hospital.password))
+        hospital.password = None
     hospital.approved = False
     hospital = await hospital_repo.update(hospital)
     if hospital:

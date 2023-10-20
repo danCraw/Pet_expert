@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Table, Integer, ARRAY
+from sqlalchemy import Column, String, Table, Integer, ARRAY, Boolean
 
 from app.db.base import metadata
 
@@ -11,5 +11,6 @@ Hospital = Table(
                 Column("photos", ARRAY(String(65)), nullable=False),
                 Column("phone", String(65), nullable=False),
                 Column("email", String(65), nullable=False),
-                Column("password_hash", String(65), nullable=False)
+                Column("password_hash", String(65), nullable=False),
+                Column("approved", Boolean, nullable=False)
                 )

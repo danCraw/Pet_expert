@@ -59,7 +59,9 @@ class ClientRepository(BaseRepository):
                                                         hospitals_repo._table.c.description,
                                                         hospitals_repo._table.c.photos,
                                                         hospitals_repo._table.c.phone,
-                                                        hospitals_repo._table.c.email)
+                                                        hospitals_repo._table.c.email,
+                                                        hospitals_repo._table.c.approved
+        )
                                                   )
         return [hospitals_repo._schema_out(**dict(dict(row).items())) for row in rows] if rows else rows
 
@@ -89,7 +91,9 @@ class ClientRepository(BaseRepository):
               doctors_repo._table.c.rating,
               doctors_repo._table.c.education,
               doctors_repo._table.c.treatment_profile,
-              doctors_repo._table.c.work_experience))
+              doctors_repo._table.c.work_experience,
+              doctors_repo._table.c.approved
+        ))
         return [doctors_repo._schema_out(**dict(dict(row).items())) for row in rows] if rows else rows
 
     async def get_reviews(self,

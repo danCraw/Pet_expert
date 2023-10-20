@@ -2,7 +2,6 @@ import pytest_asyncio
 
 from app.api.routes.doctors import create_doctor, delete_doctor
 from app.models.doctor import DoctorIn, DoctorOut
-from tests.doctors import doctor
 
 
 @pytest_asyncio.fixture

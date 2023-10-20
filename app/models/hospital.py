@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import Optional
 
 from app.models.base import BaseSchema
@@ -11,6 +10,7 @@ class HospitalBase(BaseSchema):
     phone: str
     email: str
     password: Optional[str]
+    approved: bool
 
 
 class HospitalIn(HospitalBase, extra='allow'):
