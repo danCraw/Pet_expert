@@ -16,8 +16,8 @@ class VisitBase(BaseSchema):
 
 
 class VisitIn(VisitBase):
-    visit_id: Optional[int]
+    id: Optional[int]
 
 
 class VisitOut(VisitBase):
-    visit_id: int
+    id: int

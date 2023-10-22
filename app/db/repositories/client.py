@@ -104,18 +104,18 @@ class ClientRepository(BaseRepository):
                           hospitals_table: Hospital,
                           ):
         rows = await review_repo._db.fetch_all(review_repo._table.select()
-        .join(visits_table, review_repo._table.c.visit_id == visits_table.visit_id, isouter=True)
-        .join(doctors_table, visits_table.c.client_id == doctors_table.client_id, isouter=True)
-        .join(hospitals_table, visits_table.c.client_id == visits_table.client_id, isouter=True)
+        .join(visits_table, review_repo._table.c.visit_id == visits_table.c.id, isouter=True)
+        .join(doctors_table, review_repo._table.c.doctor_id == doctors_table.c.id, isouter=True)
+        .join(hospitals_table, review_repo._table.c.hospital_id == hospitals_table.c.id, isouter=True)
         .where(visits_table.c.client_id == client_id)
         .with_only_columns(
-         hospitals_table.c.name,
-         doctors_table.c.name,
+         hospitals_table.c.name.label('hospital_name'),
+         doctors_table.c.name.label('doctor_name'),
+         visits_table.c.date_of_receipt,
          review_repo._table.c.liked,
          review_repo._table.c.did_not_liked,
          review_repo._table.c.comment,
          review_repo._table.c.review_time,
          review_repo._table.c.confirmed,
         ))
-
-        return [review_repo._schema_out(**dict(dict(row).items())) for row in rows] if rows else rows
+        return [review_repo._schema_out(**dict(row)) for row in rows] if rows else rows

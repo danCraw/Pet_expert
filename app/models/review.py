@@ -1,5 +1,5 @@
 from typing import Optional
-from datetime import datetime
+from datetime import datetime, date
 from app.models.base import BaseSchema
 
 
@@ -7,7 +7,6 @@ class ReviewBase(BaseSchema):
     visit_id: int
     hospital_id: int
     doctor_id: int
-    client_id: int
     liked: str
     did_not_liked: str
     comment: str
@@ -20,5 +19,15 @@ class ReviewIn(ReviewBase):
 
 
 class ReviewOut(ReviewBase):
-    id: int
-
+    id: int | None
+    visit_id: int | None
+    hospital_id: int | None
+    doctor_id: int | None
+    liked: str
+    did_not_liked: str
+    comment: str
+    review_time: datetime
+    confirmed: str
+    date_of_receipt: date | None
+    hospital_name: str | None
+    doctor_name: str | None

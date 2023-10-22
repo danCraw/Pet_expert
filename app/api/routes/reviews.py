@@ -5,8 +5,11 @@ from dependency_injector import containers, providers
 from dependency_injector.wiring import inject, Provide
 from fastapi import APIRouter, HTTPException, Depends
 
+from app.db.repositories.doctor import DoctorRepository
+from app.db.repositories.hospital import HospitalRepository
 from app.db.repositories.reply import ReplyRepository
 from app.db.repositories.review import ReviewRepository
+from app.db.repositories.visit import VisitRepository
 from app.models.review import ReviewIn
 from app.models.review import ReviewOut
 
@@ -18,6 +21,12 @@ class Container(containers.DeclarativeContainer):
     reviews = providers.Factory(ReviewRepository)
 
     reply = providers.Factory(ReplyRepository)
+
+    hospitals = providers.Factory(HospitalRepository)
+
+    visits = providers.Factory(VisitRepository)
+
+    doctors = providers.Factory(DoctorRepository)
 
 
 @router.get("/")
@@ -40,9 +49,13 @@ async def one_review(review_id: int, review_repo: ReviewRepository = Depends(
 
 @router.post("/")
 @inject
-async def create_review(review: ReviewIn, review_repo: ReviewRepository = Depends(
-                              Provide[Container.reviews])) -> ReviewOut:
-    review = await review_repo.create(review)
+async def create_review(review: ReviewIn,
+                        review_repo: ReviewRepository = Depends(Provide[Container.reviews]),
+                        visits_repo: ReviewRepository = Depends(Provide[Container.visits]),
+                        doctor_repo: ReviewRepository = Depends(Provide[Container.doctors]),
+                        hospitals_repo: ReviewRepository = Depends(Provide[Container.hospitals])
+                        ) -> ReviewOut:
+    review = await review_repo.create(review, visits_repo._table, doctor_repo._table, hospitals_repo._table)
     return review
 
 
@@ -57,7 +70,7 @@ async def reply_to_review(review_id: int, review: ReviewIn,
 
 @inject
 async def delete_review(review_id: int, review_repo: ReviewRepository = Depends(
-    Provide[Container.clients])) -> list[ReviewOut]:
+    Provide[Container.reviews])) -> list[ReviewOut]:
     review = await review_repo.delete(review_id)
     if review:
         return review

@@ -16,6 +16,7 @@ from app.models.doctor import DoctorOut
 from app.models.favorite_doctor import FavouriteDoctor
 from app.models.favorite_hospital import FavouriteHospital
 from app.models.hospital import HospitalOut
+from app.models.review import ReviewOut
 
 router = APIRouter()
 
@@ -155,15 +156,15 @@ async def client_reviews(client_id: int,
                        doctor_repo: DoctorRepository = Depends(Provide[Container.doctors]),
                        hospital_repo: HospitalRepository = Depends(Provide[Container.hospitals]),
                        client_repo: ClientRepository = Depends(Provide[Container.clients])
-                       ) -> list[DoctorOut]:
-    review = await client_repo.get_reviews(
+                       ) -> list[ReviewOut]:
+    reviews = await client_repo.get_reviews(
         client_id,
         review_repo,
         visit_repo._table,
         doctor_repo._table,
         hospital_repo._table
     )
-    return review
+    return reviews
 
 
 container = Container()

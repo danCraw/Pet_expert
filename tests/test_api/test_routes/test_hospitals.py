@@ -4,19 +4,7 @@ from app.api.routes.hospitals import create_hospital, delete_hospital, update_ho
 from app.models.hospital import HospitalIn, HospitalOut
 from tests.db.connection import db_connection
 from tests.db.hospitals.data import db_hospital
-
-
-@pytest.fixture
-def hospital() -> HospitalIn:
-    return HospitalIn(id='1',
-                      name='name',
-                      description='description',
-                      photos=['photos_path', ],
-                      phone='phone',
-                      email='email',
-                      password="password",
-                      approved=True
-                      )
+from tests.test_models import hospital
 
 
 @pytest.mark.asyncio

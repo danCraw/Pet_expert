@@ -46,5 +46,27 @@ async def create_visit(visit: VisitIn, visit_repo: VisitRepository = Depends(
     return visit
 
 
+@router.put("/")
+@inject
+async def update_visit(visit: VisitIn, visit_repo: VisitRepository = Depends(
+    Provide[Container.visits])) -> VisitOut:
+    visit = await visit_repo.update(visit)
+    if visit:
+        return visit
+    else:
+        raise HTTPException(status_code=UNPROCESSABLE_ENTITY, detail="visit with the given Id not found")
+
+
+@router.delete("/{visit_id}")
+@inject
+async def delete_visit(visit_id: int, visit_repo: VisitRepository = Depends(
+    Provide[Container.visits])) -> list[VisitOut]:
+    visit = await visit_repo.delete(visit_id)
+    if visit:
+        return visit
+    else:
+        raise HTTPException(status_code=UNPROCESSABLE_ENTITY, detail="visit with the given Id not found")
+
+
 container = Container()
 container.wire(modules=[sys.modules[__name__]])
