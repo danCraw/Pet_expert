@@ -26,7 +26,7 @@ class ClientRepository(BaseRepository):
         super().__init__(*args, **kwargs)
 
     @property
-    def _table(self) -> sqlalchemy.Table:
+    def table(self) -> sqlalchemy.Table:
         return Client
 
     @property
@@ -48,19 +48,19 @@ class ClientRepository(BaseRepository):
                                      hospitals_repo: HospitalRepository,
                                      favourite_hospitals_table: FavoriteHospitals
                                      ) -> list[HospitalOut]:
-        rows = await hospitals_repo._db.fetch_all(hospitals_repo._table.select()
+        rows = await hospitals_repo._db.fetch_all(hospitals_repo.table.select()
                                                   .join(favourite_hospitals_table,
-                                                        hospitals_repo._table.c.id == favourite_hospitals_table.c.hospital_id,
+                                                        hospitals_repo.table.c.id == favourite_hospitals_table.c.hospital_id,
                                                         isouter=True)
                                                   .where(favourite_hospitals_table.c.hospital_id == client_id)
                                                   .with_only_columns(
-                                                        hospitals_repo._table.c.id,
-                                                        hospitals_repo._table.c.name,
-                                                        hospitals_repo._table.c.description,
-                                                        hospitals_repo._table.c.photos,
-                                                        hospitals_repo._table.c.phone,
-                                                        hospitals_repo._table.c.email,
-                                                        hospitals_repo._table.c.approved
+                                                        hospitals_repo.table.c.id,
+                                                        hospitals_repo.table.c.name,
+                                                        hospitals_repo.table.c.description,
+                                                        hospitals_repo.table.c.photos,
+                                                        hospitals_repo.table.c.phone,
+                                                        hospitals_repo.table.c.email,
+                                                        hospitals_repo.table.c.approved
         )
                                                   )
         return [hospitals_repo._schema_out(**dict(dict(row).items())) for row in rows] if rows else rows
@@ -76,23 +76,23 @@ class ClientRepository(BaseRepository):
                                    doctors_repo: DoctorRepository,
                                    favourite_doctors_table: FavoriteDoctors
                                    ) -> list[DoctorOut]:
-        rows = await doctors_repo._db.fetch_all(doctors_repo._table.select()
+        rows = await doctors_repo._db.fetch_all(doctors_repo.table.select()
         .join(favourite_doctors_table,
-              doctors_repo._table.c.id == favourite_doctors_table.c.doctor_id,
+              doctors_repo.table.c.id == favourite_doctors_table.c.doctor_id,
               isouter=True)
         .where(favourite_doctors_table.c.client_id == client_id)
         .with_only_columns(
-              doctors_repo._table.c.id,
-              doctors_repo._table.c.name,
-              doctors_repo._table.c.surname,
-              doctors_repo._table.c.patronomic,
-              doctors_repo._table.c.photo,
-              doctors_repo._table.c.email,
-              doctors_repo._table.c.rating,
-              doctors_repo._table.c.education,
-              doctors_repo._table.c.treatment_profile,
-              doctors_repo._table.c.work_experience,
-              doctors_repo._table.c.approved
+              doctors_repo.table.c.id,
+              doctors_repo.table.c.name,
+              doctors_repo.table.c.surname,
+              doctors_repo.table.c.patronomic,
+              doctors_repo.table.c.photo,
+              doctors_repo.table.c.email,
+              doctors_repo.table.c.rating,
+              doctors_repo.table.c.education,
+              doctors_repo.table.c.treatment_profile,
+              doctors_repo.table.c.work_experience,
+              doctors_repo.table.c.approved
         ))
         return [doctors_repo._schema_out(**dict(dict(row).items())) for row in rows] if rows else rows
 
@@ -103,19 +103,19 @@ class ClientRepository(BaseRepository):
                           doctors_table: Doctor,
                           hospitals_table: Hospital,
                           ):
-        rows = await review_repo._db.fetch_all(review_repo._table.select()
-        .join(visits_table, review_repo._table.c.visit_id == visits_table.c.id, isouter=True)
-        .join(doctors_table, review_repo._table.c.doctor_id == doctors_table.c.id, isouter=True)
-        .join(hospitals_table, review_repo._table.c.hospital_id == hospitals_table.c.id, isouter=True)
+        rows = await review_repo._db.fetch_all(review_repo.table.select()
+        .join(visits_table, review_repo.table.c.visit_id == visits_table.c.id, isouter=True)
+        .join(doctors_table, review_repo.table.c.doctor_id == doctors_table.c.id, isouter=True)
+        .join(hospitals_table, review_repo.table.c.hospital_id == hospitals_table.c.id, isouter=True)
         .where(visits_table.c.client_id == client_id)
         .with_only_columns(
          hospitals_table.c.name.label('hospital_name'),
          doctors_table.c.name.label('doctor_name'),
          visits_table.c.date_of_receipt,
-         review_repo._table.c.liked,
-         review_repo._table.c.did_not_liked,
-         review_repo._table.c.comment,
-         review_repo._table.c.review_time,
-         review_repo._table.c.confirmed,
+         review_repo.table.c.liked,
+         review_repo.table.c.did_not_liked,
+         review_repo.table.c.comment,
+         review_repo.table.c.review_time,
+         review_repo.table.c.confirmed,
         ))
         return [review_repo._schema_out(**dict(row)) for row in rows] if rows else rows

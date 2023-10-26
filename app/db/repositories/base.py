@@ -18,7 +18,7 @@ class BaseRepository(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def _table(self) -> sqlalchemy.Table:
+    def table(self) -> sqlalchemy.Table:
         pass
 
     @property
@@ -36,14 +36,14 @@ class BaseRepository(abc.ABC):
         return uuid.uuid4()
 
     def _preprocess_create(self, values: Dict) -> Dict:
-        if values.get(self._table.c[0].description, None) is None:
-            values.pop(self._table.c[0].description)  # removing None id
+        if values.get(self.table.c[0].description, None) is None:
+            values.pop(self.table.c[0].description)  # removing None id
         if values.get('password', None) is None:
             values.pop('password')
         return values
 
     async def _list(self) -> List[Record]:
-        query = self._table.select()
+        query = self.table.select()
         return await self._db.fetch_all(query=query)
 
     async def list(self) -> List:
@@ -54,12 +54,12 @@ class BaseRepository(abc.ABC):
         if isinstance(values, dict):
             values = self._schema_in(**values)
         dict_values = dict(values.dict(exclude_none=True))
-        result = await self._db.execute(query=self._table.insert().values(dict_values).returning(self._table.c[0]))
-        dict_values.update({self._table.c[0].description: result})
+        result = await self._db.execute(query=self.table.insert().values(dict_values).returning(self.table.c[0]))
+        dict_values.update({self.table.c[0].description: result})
         return self._schema_out(**dict_values)
 
     async def get(self, id: Union[int, str]) -> _schema_out:
-        row = await self._db.fetch_one(query=self._table.select().where(column(self._table.c[0].description) == id))
+        row = await self._db.fetch_one(query=self.table.select().where(column(self.table.c[0].description) == id))
         if row:
             return self._schema_out(**dict(dict(row).items()))
         else:
@@ -71,7 +71,7 @@ class BaseRepository(abc.ABC):
         dict_values = self._preprocess_create(dict(values))
         row = await self.get(dict_values['id'])
         if row:
-            await self._db.execute(query=self._table.update().where(self._table.c.id == dict_values['id']),
+            await self._db.execute(query=self.table.update().where(self.table.c.id == dict_values['id']),
                                    values=dict_values)
             return self._schema_out(**dict_values)
         return row
@@ -79,5 +79,5 @@ class BaseRepository(abc.ABC):
     async def delete(self, id: Union[int, str]) -> _schema_out:
         row = await self.get(id)
         if row:
-            await self._db.execute(query=self._table.delete().where(column(self._table.c[0].description) == id))
+            await self._db.execute(query=self.table.delete().where(column(self.table.c[0].description) == id))
         return row

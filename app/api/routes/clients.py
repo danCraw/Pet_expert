@@ -113,7 +113,7 @@ async def favorite_hospitals(client_id: int,
                                  Provide[Container.favorite_hospitals]),
                              client_repo: ClientRepository = Depends(Provide[Container.clients])
                              ) -> list[HospitalOut]:
-    hospitals = await client_repo.get_favorite_hospitals(client_id, hospitals_repo, favorite_hospitals_repo._table)
+    hospitals = await client_repo.get_favorite_hospitals(client_id, hospitals_repo, favorite_hospitals_repo.table)
     if hospitals:
         return hospitals
     else:
@@ -141,7 +141,7 @@ async def favorite_doctors(client_id: int,
                            favorite_doctors_repo: FavoriteDoctorsRepository = Depends(
                                Provide[Container.favorite_doctors]),
                            client_repo: ClientRepository = Depends(Provide[Container.clients])) -> list[DoctorOut]:
-    doctors = await client_repo.get_favorite_doctors(client_id, doctors_repo, favorite_doctors_repo._table)
+    doctors = await client_repo.get_favorite_doctors(client_id, doctors_repo, favorite_doctors_repo.table)
     if doctors is not None:
         return doctors
     else:
@@ -160,9 +160,9 @@ async def client_reviews(client_id: int,
     reviews = await client_repo.get_reviews(
         client_id,
         review_repo,
-        visit_repo._table,
-        doctor_repo._table,
-        hospital_repo._table
+        visit_repo.table,
+        doctor_repo.table,
+        hospital_repo.table
     )
     return reviews
 

@@ -1,6 +1,9 @@
-import pytest
+from datetime import datetime
 
-from app.api.routes.reviews import create_review, one_review, delete_review
+import pytest
+from fastapi import HTTPException
+
+from app.api.routes.reviews import create_review, one_review, delete_review, reviews_list, reply_to_review
 from app.models.review import ReviewIn, ReviewOut
 from tests.db.connection import db_connection
 from tests.db.hospitals.data import db_hospital
@@ -18,17 +21,58 @@ from tests.test_models import client
 @pytest.mark.asyncio
 async def test_create(db_connection, db_hospital, db_doctor, db_visit, db_client, review: ReviewIn):
     response: ReviewOut = await create_review(review)
-    assert response == ReviewOut(**review.dict())
+    assert response == ReviewOut(**review.dict() | {'hospital_name': 'name',
+                                                    'doctor_name': 'name',
+                                                    'date_of_receipt': datetime.date(datetime.now())
+                                                    })
 
 
 @pytest.mark.asyncio
 async def test_read(db_review: ReviewIn):
     response = await one_review(db_review.id)
-    assert response == ReviewOut(**db_review.dict())
+    assert response == ReviewOut(**db_review.dict() | {'hospital_name': 'name',
+                                                       'doctor_name': 'name',
+                                                       'date_of_receipt': datetime.date(datetime.now())
+                                                       })
+
+
+@pytest.mark.asyncio
+async def test_list_reviews(db_review: ReviewIn):
+    response = await reviews_list()
+    db_review.visit_id = None
+    db_review.hospital_id = None
+    db_review.doctor_id = None
+    assert response == [ReviewOut(**db_review.dict() | {'hospital_name': 'name',
+                                                        'doctor_name': 'name',
+                                                        'date_of_receipt': datetime.date(datetime.now())
+                                                        })]
+
+
+@pytest.mark.asyncio
+async def test_reply_to_review(db_review: ReviewIn):
+    review_reply = ReviewIn(id='2',
+                            visit_id='2',
+                            hospital_id='2',
+                            doctor_id='2',
+                            liked='reply_liked',
+                            did_not_liked='did_not_liked',
+                            comment='comment',
+                            review_time=datetime.now(),
+                            confirmed=True,
+                            )
+
+    await reply_to_review(db_review.id, review_reply)
 
 
 @pytest.mark.asyncio
 async def test_delete(db_connection, db_hospital, db_doctor, db_visit, db_client, review: ReviewIn):
     await create_review(review)
     response = await delete_review(review.id)
-    assert response == ReviewOut(**review.dict())
+    assert response == review.id
+
+
+@pytest.mark.asyncio
+async def test_delete_wrong_id(db_connection, db_hospital, db_doctor, db_visit, db_client, review: ReviewIn):
+    await create_review(review)
+    with pytest.raises(HTTPException):
+        await delete_review(2)

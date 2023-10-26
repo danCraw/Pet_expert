@@ -10,7 +10,7 @@ class FavoriteHospitalsRepository(BaseRepository):
         super().__init__(*args, **kwargs)
 
     @property
-    def _table(self) -> sqlalchemy.Table:
+    def table(self) -> sqlalchemy.Table:
         return FavoriteHospitals
 
     @property

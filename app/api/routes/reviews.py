@@ -31,16 +31,24 @@ class Container(containers.DeclarativeContainer):
 
 @router.get("/")
 @inject
-async def reviews_list(review_repo: ReviewRepository = Depends(Provide[Container.reviews])) -> list[ReviewOut]:
-    review = await review_repo.list()
+async def reviews_list(review_repo: ReviewRepository = Depends(Provide[Container.reviews]),
+                       visits_repo: ReviewRepository = Depends(Provide[Container.visits]),
+                       doctor_repo: ReviewRepository = Depends(Provide[Container.doctors]),
+                       hospitals_repo: ReviewRepository = Depends(Provide[Container.hospitals]),
+                       ) -> list[ReviewOut]:
+    review = await review_repo.list(visits_repo.table, doctor_repo.table, hospitals_repo.table)
     return review
 
 
 @router.get("/{review_id}")
 @inject
-async def one_review(review_id: int, review_repo: ReviewRepository = Depends(
-                           Provide[Container.reviews])) -> ReviewOut:
-    review = await review_repo.get(review_id)
+async def one_review(review_id: int,
+                     review_repo: ReviewRepository = Depends(Provide[Container.reviews]),
+                     visits_repo: ReviewRepository = Depends(Provide[Container.visits]),
+                     doctor_repo: ReviewRepository = Depends(Provide[Container.doctors]),
+                     hospitals_repo: ReviewRepository = Depends(Provide[Container.hospitals]),
+                     ) -> ReviewOut:
+    review = await review_repo.get(review_id, visits_repo.table, doctor_repo.table, hospitals_repo.table)
     if review:
         return review
     else:
@@ -55,16 +63,21 @@ async def create_review(review: ReviewIn,
                         doctor_repo: ReviewRepository = Depends(Provide[Container.doctors]),
                         hospitals_repo: ReviewRepository = Depends(Provide[Container.hospitals])
                         ) -> ReviewOut:
-    review = await review_repo.create(review, visits_repo._table, doctor_repo._table, hospitals_repo._table)
+    review = await review_repo.create(review, visits_repo.table, doctor_repo.table, hospitals_repo.table)
     return review
 
 
 @router.post("/reply/{review_id}")
 @inject
-async def reply_to_review(review_id: int, review: ReviewIn,
+async def reply_to_review(review_id: int,
+                          review: ReviewIn,
                           review_repo: ReviewRepository = Depends(Provide[Container.reviews]),
-                          reply_repo: ReplyRepository = Depends(Provide[Container.reply])) -> ReviewOut:
-    review = await review_repo.reply(review_id, review, reply_repo)
+                          reply_repo: ReplyRepository = Depends(Provide[Container.reply]),
+                          visits_repo: ReviewRepository = Depends(Provide[Container.visits]),
+                          doctor_repo: ReviewRepository = Depends(Provide[Container.doctors]),
+                          hospitals_repo: ReviewRepository = Depends(Provide[Container.hospitals])
+                          ) -> ReviewOut:
+    review = await review_repo.reply(review_id, review, reply_repo, visits_repo, doctor_repo, hospitals_repo)
     return review
 
 
