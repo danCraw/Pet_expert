@@ -70,11 +70,12 @@ CREATE TABLE reviews (
     FOREIGN KEY (visit_id) REFERENCES visits (id) ON DELETE CASCADE
 );
 
-CREATE TABLE reply (
+CREATE TABLE replies (
+    id INTEGER NOT NULL,
     review_id INTEGER NOT NULL,
-    reply_review_id INTEGER NOT NULL,
-    FOREIGN KEY (review_id) REFERENCES reviews (id) ON DELETE CASCADE,
-    FOREIGN KEY (reply_review_id) REFERENCES reviews (id) ON DELETE CASCADE
+    comment VARCHAR (2000) NOT NULL,
+    review_time TIMESTAMP NOT NULL,
+    FOREIGN KEY (review_id) REFERENCES reviews (id) ON DELETE CASCADE
 );
 
 CREATE TABLE filial (
