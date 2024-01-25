@@ -1,7 +1,7 @@
 import sqlalchemy
 
 from app.db.repositories.base import BaseRepository
-from app.db.tables.favorite_hospital import FavoriteHospitals
+from app.db.tables.favorite_hospital import favorite_hospitals
 from app.models.favorite_hospital import FavouriteHospital
 
 
@@ -11,7 +11,7 @@ class FavoriteHospitalsRepository(BaseRepository):
 
     @property
     def table(self) -> sqlalchemy.Table:
-        return FavoriteHospitals
+        return favorite_hospitals
 
     @property
     def _schema_in(self):

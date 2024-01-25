@@ -96,9 +96,8 @@ async def delete_client(client_id: int, client_repo: ClientRepository = Depends(
 async def add_hospital_to_favourite(favourite_hospital: FavouriteHospital,
                                     favorite_hospitals_repo: FavoriteHospitalsRepository = Depends(
                                         Provide[Container.favorite_hospitals]),
-                                    client_repo: ClientRepository = Depends(Provide[Container.clients])
                                     ) -> FavouriteHospital:
-    favourite_hospital = await client_repo.add_hospital_to_favorite(favourite_hospital, favorite_hospitals_repo)
+    favourite_hospital = await favorite_hospitals_repo.create(favourite_hospital)
     if favourite_hospital:
         return favourite_hospital
     else:
@@ -109,11 +108,9 @@ async def add_hospital_to_favourite(favourite_hospital: FavouriteHospital,
 @inject
 async def favorite_hospitals(client_id: int,
                              hospitals_repo: HospitalRepository = Depends(Provide[Container.hospitals]),
-                             favorite_hospitals_repo: FavoriteDoctorsRepository = Depends(
-                                 Provide[Container.favorite_hospitals]),
                              client_repo: ClientRepository = Depends(Provide[Container.clients])
                              ) -> list[HospitalOut]:
-    hospitals = await client_repo.get_favorite_hospitals(client_id, hospitals_repo, favorite_hospitals_repo.table)
+    hospitals = await client_repo.get_favorite_hospitals(client_id, hospitals_repo)
     if hospitals:
         return hospitals
     else:
@@ -122,12 +119,11 @@ async def favorite_hospitals(client_id: int,
 
 @router.post("/favorite_doctors/{client_id}")
 @inject
-async def add_doctor_to_favourite(favourite_doctor: FavouriteDoctor,
-                                  favorite_doctors_repo: FavoriteDoctorsRepository = Depends(
-                                      Provide[Container.favorite_doctors]),
-                                  client_repo: ClientRepository = Depends(Provide[Container.clients])) -> list[
-    DoctorOut]:
-    doctors = await client_repo.add_doctor_to_favorite(favourite_doctor, favorite_doctors_repo)
+async def add_doctor_to_favourite(
+        favourite_doctor: FavouriteDoctor,
+        favorite_doctors_repo: FavoriteDoctorsRepository = Depends(Provide[Container.favorite_doctors])
+) -> list[DoctorOut]:
+    doctors = await favorite_doctors_repo.create(favourite_doctor)
     if doctors:
         return doctors
     else:
@@ -136,12 +132,12 @@ async def add_doctor_to_favourite(favourite_doctor: FavouriteDoctor,
 
 @router.get("/favorite_doctors/{client_id}")
 @inject
-async def favorite_doctors(client_id: int,
-                           doctors_repo: DoctorRepository = Depends(Provide[Container.doctors]),
-                           favorite_doctors_repo: FavoriteDoctorsRepository = Depends(
-                               Provide[Container.favorite_doctors]),
-                           client_repo: ClientRepository = Depends(Provide[Container.clients])) -> list[DoctorOut]:
-    doctors = await client_repo.get_favorite_doctors(client_id, doctors_repo, favorite_doctors_repo.table)
+async def favorite_doctors(
+        client_id: int,
+        doctors_repo: DoctorRepository = Depends(Provide[Container.doctors]),
+        client_repo: ClientRepository = Depends(Provide[Container.clients])
+) -> list[DoctorOut]:
+    doctors = await client_repo.get_favorite_doctors(client_id, doctors_repo)
     if doctors is not None:
         return doctors
     else:
@@ -150,19 +146,14 @@ async def favorite_doctors(client_id: int,
 
 @router.post("/reviews/{client_id}")
 @inject
-async def client_reviews(client_id: int,
-                       review_repo: ReviewRepository = Depends(Provide[Container.reviews]),
-                       visit_repo: VisitRepository = Depends(Provide[Container.visits]),
-                       doctor_repo: DoctorRepository = Depends(Provide[Container.doctors]),
-                       hospital_repo: HospitalRepository = Depends(Provide[Container.hospitals]),
-                       client_repo: ClientRepository = Depends(Provide[Container.clients])
-                       ) -> list[ReviewOut]:
+async def client_reviews(
+        client_id: int,
+        review_repo: ReviewRepository = Depends(Provide[Container.reviews]),
+        client_repo: ClientRepository = Depends(Provide[Container.clients])
+) -> list[ReviewOut]:
     reviews = await client_repo.get_reviews(
         client_id,
         review_repo,
-        visit_repo.table,
-        doctor_repo.table,
-        hospital_repo.table
     )
     return reviews
 

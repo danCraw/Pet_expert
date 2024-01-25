@@ -2,7 +2,7 @@ from sqlalchemy import Column, String, Table, Integer, Time, ForeignKey
 
 from app.db.base import metadata
 from app.db.tables.services import Service
-from app.db.tables.doctors import Doctor
+from app.db.tables.doctors import doctors
 
 Doctor_service = Table(
                 'doctor_service',
@@ -11,5 +11,5 @@ Doctor_service = Table(
                 Column("service_id", Integer, nullable=False),
                 Column("price", Integer, nullable=False),
                 Column("service_id", Integer, ForeignKey(Service.id), nullable=False),
-                Column("doctor_id", Integer, ForeignKey(Doctor.id), nullable=False)
+                Column("doctor_id", Integer, ForeignKey(doctors.id), nullable=False)
 )

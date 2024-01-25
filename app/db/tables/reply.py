@@ -1,10 +1,12 @@
-from sqlalchemy import Column, Table, Integer, ForeignKey
+from sqlalchemy import Column, Table, Integer, ForeignKey, String, DateTime
 
 from app.db.base import metadata
 
 Reply = Table(
-            'reply',
+            'replies',
             metadata,
-            Column("reply_id", Integer, ForeignKey('review.id'), nullable=False),
-            Column("reply_review_id", Integer, ForeignKey('review.id'), nullable=False)
+            Column("id", Integer, primary_key=True),
+            Column("review_id", Integer, ForeignKey('review.id'), nullable=False),
+            Column("comment", String(2000), nullable=False),
+            Column("review_time", DateTime, nullable=False),
             )

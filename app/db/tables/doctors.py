@@ -2,7 +2,7 @@ from sqlalchemy import Column, String, Table, Integer, Float, Boolean
 
 from app.db.base import metadata
 
-Doctor = Table(
+doctors = Table(
                 'doctors',
                 metadata,
                 Column("id", Integer, primary_key=True),

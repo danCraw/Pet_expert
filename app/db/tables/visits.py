@@ -2,7 +2,7 @@ from sqlalchemy import Column, String, Table, Integer, ARRAY, Date, ForeignKey
 
 from app.db.base import metadata
 
-Visit = Table(
+visits = Table(
     'visits',
     metadata,
     Column("id", Integer, primary_key=True, nullable=True),

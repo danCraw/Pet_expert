@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Table, Integer, ForeignKey, String, ARRAY
 
 from app.db.base import metadata
-from app.db.tables.doctors import Doctor
+from app.db.tables.doctors import doctors
 
 Course = Table(
                 'courses',
@@ -11,5 +11,5 @@ Course = Table(
                 Column("description", String(150), nullable=False),
                 Column("photos", ARRAY(String(150)), nullable=False),
                 Column("doctor_id", Integer, nullable=False),
-                Column("doctor_id", Integer, ForeignKey(Doctor.doctor_id), nullable=False)
+                Column("doctor_id", Integer, ForeignKey(doctors.doctor_id), nullable=False)
 )

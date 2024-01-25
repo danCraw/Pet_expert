@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import pytest
 
 from app.api.routes.clients import create_client, one_client, delete_client, update_client, add_hospital_to_favourite, \
@@ -7,7 +9,7 @@ from app.models.doctor import DoctorIn, DoctorOut
 from app.models.favorite_doctor import FavouriteDoctor
 from app.models.favorite_hospital import FavouriteHospital
 from app.models.hospital import HospitalIn, HospitalOut
-from app.models.review import ReviewIn
+from app.models.review import ReviewIn, ReviewOut
 from tests.db.connection import db_connection
 from tests.db.clients.data import db_client
 from tests.db.hospitals.data import db_hospital
@@ -80,4 +82,14 @@ async def test_add_doctor_to_favourite(db_client: ClientIn, db_doctor: DoctorIn)
 @pytest.mark.asyncio
 async def test_client_reviews(db_client: ClientIn, db_review: ReviewIn):
     test_client_reviews = await client_reviews(db_client.id)
-    pass
+    db_review.visit_id = None
+    db_review.doctor_id = None
+    db_review.hospital_id = None
+    assert test_client_reviews == [ReviewOut(**db_review.dict() |
+                                                {
+                                                'client_name': 'name',
+                                                'client_surname': 'surname',
+                                                'hospital_name': 'name',
+                                                'doctor_name': 'name',
+                                                'date_of_receipt': datetime.date(datetime.now())
+                                                })]

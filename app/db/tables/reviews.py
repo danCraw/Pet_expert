@@ -2,7 +2,7 @@ from sqlalchemy import Column, String, Table, Integer, Boolean, ForeignKey, Date
 
 from app.db.base import metadata
 
-Review = Table(
+reviews = Table(
                 'reviews',
                 metadata,
                 Column("id", Integer, primary_key=True),

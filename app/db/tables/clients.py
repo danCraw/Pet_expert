@@ -2,7 +2,7 @@ from sqlalchemy import Column, String, Table, Integer
 
 from app.db.base import metadata
 
-Client = Table(
+clients = Table(
                 'clients',
                 metadata,
                 Column("id", Integer, primary_key=True),

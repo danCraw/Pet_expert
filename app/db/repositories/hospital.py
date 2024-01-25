@@ -1,7 +1,7 @@
 from typing import Type
 
 import sqlalchemy
-from app.db.tables.hospitals import Hospital
+from app.db.tables.hospitals import hospitals
 
 from app.db.repositories.base import BaseRepository
 from app.models.hospital import HospitalOut, HospitalIn
@@ -13,7 +13,7 @@ class HospitalRepository(BaseRepository):
 
     @property
     def table(self) -> sqlalchemy.Table:
-        return Hospital
+        return hospitals
 
     @property
     def _schema_out(self) -> Type[HospitalOut]:

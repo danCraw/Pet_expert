@@ -23,6 +23,8 @@ class ReviewOut(ReviewBase):
     visit_id: int | None
     hospital_id: int | None
     doctor_id: int | None
+    client_name: str
+    client_surname: str
     liked: str
     did_not_liked: str
     comment: str

@@ -2,7 +2,7 @@ from sqlalchemy import Column, Table, Integer, ForeignKey
 
 from app.db.base import metadata
 
-FavoriteHospitals = Table(
+favorite_hospitals = Table(
                 'favorite_hospitals',
                 metadata,
                 Column("client_id", Integer, ForeignKey('clients.id'), nullable=False),

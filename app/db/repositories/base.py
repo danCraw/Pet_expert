@@ -48,7 +48,7 @@ class BaseRepository(abc.ABC):
 
     async def list(self) -> List:
         rows = await self._list()
-        return [self._schema_out(**dict(dict(row).items())) for row in rows]
+        return [self._schema_out(**dict(row)) for row in rows]
 
     async def create(self, values: Union[BaseSchema, Dict]) -> _schema_out:
         if isinstance(values, dict):

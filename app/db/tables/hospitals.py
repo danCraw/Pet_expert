@@ -2,7 +2,7 @@ from sqlalchemy import Column, String, Table, Integer, ARRAY, Boolean
 
 from app.db.base import metadata
 
-Hospital = Table(
+hospitals = Table(
                 'hospitals',
                 metadata,
                 Column("id", Integer, primary_key=True),

@@ -5,6 +5,7 @@ import pytest
 from app.models.client import ClientIn
 from app.models.doctor import DoctorIn
 from app.models.hospital import HospitalIn
+from app.models.reply import ReplyIn
 from app.models.review import ReviewIn
 from app.models.visit import VisitIn
 
@@ -58,6 +59,7 @@ def review() -> ReviewIn:
                     visit_id='1',
                     hospital_id='1',
                     doctor_id='1',
+                    client='name surname',
                     liked='liked',
                     did_not_liked='did_not_liked',
                     comment='comment',
@@ -77,4 +79,13 @@ def visit() -> VisitIn:
                    pet_age='1',
                    pet_breed='pet_breed',
                    pet_type='pet_type',
+                   )
+
+
+@pytest.fixture
+def reply() -> ReplyIn:
+    return ReplyIn(id='1',
+                   review_id='1',
+                   comment='comment',
+                   review_time=datetime.now(),
                    )

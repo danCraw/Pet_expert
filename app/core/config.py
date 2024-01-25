@@ -23,7 +23,7 @@ class GlobalConfig(BaseSettings):
     DB_PASSWORD: str = os.environ.get("DB_PASSWORD")
     DATABASE_URL: Optional[PostgresDsn] = os.environ.get(
         "DATABASE_URL",
-        "postgresql+asyncpg://" + DB_USER + ":" + DB_PASSWORD + "@" + DB_HOST + ":" + DB_PORT + "/" + DB_NAME
+        f"postgresql+asyncpg://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
     )
     DB_MIN_SIZE: int = 2
     DB_MAX_SIZE: int = 15
