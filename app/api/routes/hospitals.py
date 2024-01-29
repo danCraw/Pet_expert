@@ -6,13 +6,16 @@ from dependency_injector.wiring import inject, Provide
 from fastapi import APIRouter, HTTPException, Depends
 
 from app.db.repositories.hospital import HospitalRepository
+from app.db.repositories.review import ReviewRepository
 from app.models.hospital import HospitalIn
 from app.models.hospital import HospitalOut
+from app.models.review import ReviewOut
 
 router = APIRouter()
 
 
 class Container(containers.DeclarativeContainer):
+    reviews = providers.Factory(ReviewRepository)
 
     hospitals = providers.Factory(HospitalRepository)
 
@@ -69,6 +72,26 @@ async def delete_hospital(hospital_id: int, hospital_repo: HospitalRepository = 
         return hospital
     else:
         raise HTTPException(status_code=UNPROCESSABLE_ENTITY, detail="hospital with the given Id not found")
+
+
+@router.get("/reviews/{hospital_id}")
+@inject
+async def hospital_reviews(
+        hospital_id: int,
+        review_repo: ReviewRepository = Depends(Provide[Container.reviews]),
+        hospital_repo: HospitalRepository = Depends(Provide[Container.hospitals]),
+) -> list[ReviewOut]:
+    reviews = await hospital_repo.get_reviews(
+        hospital_id,
+        review_repo,
+    )
+    if reviews:
+        return reviews
+    else:
+        raise HTTPException(
+            status_code=UNPROCESSABLE_ENTITY,
+            detail="hospital with the given Id not found"
+        )
 
 
 container = Container()
