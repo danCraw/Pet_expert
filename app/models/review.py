@@ -7,6 +7,8 @@ class ReviewBase(BaseSchema):
     visit_id: int
     hospital_id: int
     doctor_id: int
+    doctor_assessment: int | None = 0
+    hospital_assessment: int | None = 0
     liked: str
     did_not_liked: str
     comment: str

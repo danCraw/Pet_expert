@@ -59,6 +59,8 @@ CREATE TABLE reviews (
     visit_id INTEGER NOT NULL,
     hospital_id INTEGER NOT NULL,
     doctor_id INTEGER NOT NULL,
+    doctor_assessment INTEGER NOT NULL,
+    hospital_assessment INTEGER NOT NULL,
     liked VARCHAR (2000) NOT NULL,
     did_not_liked VARCHAR (2000) NOT NULL,
     comment VARCHAR (2000) NOT NULL,
@@ -171,3 +173,29 @@ CREATE TABLE schedule (
     FOREIGN KEY (day_of_week_id) REFERENCES day_of_week (id) ON DELETE cascade,
     FOREIGN KEY (work_day_id) REFERENCES work_day (id) ON DELETE cascade
 );
+
+CREATE OR REPLACE FUNCTION update_doctor_average()
+RETURNS TRIGGER AS
+$$
+BEGIN
+    UPDATE doctors d
+    SET rating = subquery.avg_rating
+    FROM (
+        SELECT r.doctor_id, AVG(r.doctor_assessment) AS avg_rating
+        FROM reviews r
+        WHERE r.doctor_id = NEW.doctor_id
+        GROUP BY r.doctor_id
+    ) AS subquery
+    WHERE d.id = NEW.doctor_id;
+
+    RETURN NEW;
+END;
+$$
+LANGUAGE plpgsql;
+
+
+CREATE TRIGGER update_doctor_avg
+AFTER INSERT OR UPDATE
+ON reviews
+FOR EACH ROW
+EXECUTE FUNCTION update_doctor_average();
