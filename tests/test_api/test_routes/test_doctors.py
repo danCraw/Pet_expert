@@ -66,7 +66,7 @@ async def test_update(db_doctor: DoctorIn):
                               education='update_education',
                               treatment_profile='update_treatment_profile',
                               work_experience=2.1,
-                              approved=False
+                              approved=False,
                               )
     doctor_after_update = await update_doctor(updated_doctor)
     updated_doctor.password_hash = str(hash(updated_doctor.password))

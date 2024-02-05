@@ -49,7 +49,8 @@ def hospital() -> HospitalIn:
                       phone='phone',
                       email='email',
                       password="password",
-                      approved=True
+                      approved=True,
+                      rating=1.1,
                       )
 
 

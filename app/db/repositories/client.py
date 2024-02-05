@@ -51,10 +51,11 @@ class ClientRepository(BaseRepository):
             hospitals.c.photos,
             hospitals.c.phone,
             hospitals.c.email,
-            hospitals.c.approved
+            hospitals.c.approved,
+            hospitals.c.rating
         )
         )
-        return [hospitals_repo._schema_out(**dict(dict(row).items())) for row in rows] if rows else rows
+        return [hospitals_repo._schema_out(**dict(row)) for row in rows] if rows else rows
 
     async def get_favorite_doctors(self,
                                    client_id: int,

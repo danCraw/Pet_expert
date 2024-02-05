@@ -51,6 +51,7 @@ CREATE TABLE hospitals (
     email VARCHAR(65) NOT NULL,
     password_hash VARCHAR(65) NOT null,
     approved BOOLEAN NOT NULL,
+    rating FLOAT NOT NULL,
     PRIMARY KEY (id)
 );
 
@@ -199,3 +200,30 @@ AFTER INSERT OR UPDATE
 ON reviews
 FOR EACH ROW
 EXECUTE FUNCTION update_doctor_average();
+
+
+CREATE OR REPLACE FUNCTION update_hospital_average()
+RETURNS TRIGGER AS
+$$
+BEGIN
+    UPDATE hospitals h
+    SET rating = subquery.avg_rating
+    FROM (
+        SELECT r.hospital_id, AVG(r.hospital_assessment) AS avg_rating
+        FROM reviews r
+        WHERE r.hospital_id = NEW.hospital_id
+        GROUP BY r.hospital_id
+    ) AS subquery
+    WHERE h.id = NEW.hospital_id;
+
+    RETURN NEW;
+END;
+$$
+LANGUAGE plpgsql;
+
+
+CREATE TRIGGER update_hospital_avg
+AFTER INSERT OR UPDATE
+ON reviews
+FOR EACH ROW
+EXECUTE FUNCTION update_hospital_average();

@@ -11,6 +11,7 @@ class HospitalBase(BaseSchema):
     email: str
     password: Optional[str]
     approved: bool
+    rating: float
 
 
 class HospitalIn(HospitalBase, extra='allow'):

@@ -39,7 +39,8 @@ async def test_update(db_hospital: HospitalIn):
                                   phone='update_phone',
                                   email='update_email',
                                   password="update_password",
-                                  approved=False
+                                  approved=False,
+                                  rating=1.1,
                                   )
     hospital_after_update = await update_hospital(updated_hospital)
     updated_hospital.password_hash = str(hash(updated_hospital.password))
