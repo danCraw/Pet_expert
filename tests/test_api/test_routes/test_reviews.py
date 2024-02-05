@@ -5,6 +5,7 @@ from fastapi import HTTPException
 
 from app.api.routes.reviews import create_review, one_review, delete_review, reviews_list
 from app.db.repositories.doctor import DoctorRepository
+from app.db.repositories.hospital import HospitalRepository
 from app.db.repositories.review import ReviewRepository
 from app.models.review import ReviewIn, ReviewOut
 from tests.db.connection import db_connection
@@ -23,8 +24,10 @@ from tests.test_models import client
 @pytest.mark.asyncio
 async def test_create(db_connection, db_hospital, db_doctor, db_visit, db_client, review: ReviewIn):
     doctor_repo: DoctorRepository = DoctorRepository()
+    hospital_repo: HospitalRepository = HospitalRepository()
 
     review.doctor_assessment = 5
+    review.hospital_assessment = 3
     response: ReviewOut = await create_review(review)
     assert response == ReviewOut(**review.dict() | {'client_name': 'name',
                                                     'client_surname': 'surname',
@@ -36,6 +39,10 @@ async def test_create(db_connection, db_hospital, db_doctor, db_visit, db_client
     test_doctor = await doctor_repo.get(db_doctor.id)
 
     assert test_doctor.rating == 5
+
+    test_hospital = await hospital_repo.get(db_hospital.id)
+
+    assert test_hospital.rating == 3
 
 
 @pytest.mark.asyncio
