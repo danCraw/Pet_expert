@@ -80,7 +80,7 @@ class ClientRepository(BaseRepository):
             doctors.c.work_experience,
             doctors.c.approved
         ))
-        return [doctors_repo._schema_out(**dict(dict(row).items())) for row in rows] if rows else rows
+        return [DoctorOut(**dict(row)) for row in rows] if rows else rows
 
     async def get_reviews(self,
                           client_id: int,

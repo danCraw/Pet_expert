@@ -1,8 +1,8 @@
 from typing import Type
 
 import sqlalchemy
+from sqlalchemy import select
 
-from app.db.repositories.review import ReviewRepository
 from app.db.tables.clients import clients
 from app.db.tables.doctors import doctors
 
@@ -11,6 +11,7 @@ from app.db.tables.hospitals import hospitals
 from app.db.tables.reviews import reviews
 from app.db.tables.visits import visits
 from app.models.doctor import DoctorOut, DoctorIn
+from app.models.review import ReviewOut
 
 
 class DoctorRepository(BaseRepository):
@@ -31,15 +32,8 @@ class DoctorRepository(BaseRepository):
 
     async def get_reviews(self,
                           doctor_id: int,
-                          review_repo: ReviewRepository,
                           ):
-        rows = await review_repo._db.fetch_all(
-            review_repo.table.select()
-        .join(visits, reviews.c.visit_id == visits.c.id, isouter=True)
-        .join(self.table, reviews.c.doctor_id == self.table.c.id, isouter=True)
-        .join(hospitals, reviews.c.hospital_id == hospitals.c.id, isouter=True)
-        .where(reviews.c.doctor_id == doctor_id)
-        .with_only_columns(
+        query = select(
             clients.c.name.label('client_name'),
             clients.c.surname.label('client_surname'),
             hospitals.c.name.label('hospital_name'),
@@ -51,5 +45,24 @@ class DoctorRepository(BaseRepository):
             reviews.c.comment,
             reviews.c.review_time,
             reviews.c.confirmed,
-        ))
-        return [review_repo._schema_out(**dict(row)) for row in rows] if rows else rows
+        )
+        query = query.join(
+            visits,
+            reviews.c.visit_id == visits.c.id,
+            isouter=True
+        )
+        query = query.join(
+            reviews,
+            reviews.c.doctor_id == self.table.c.id,
+            isouter=True
+        )
+        query = query.join(
+            hospitals,
+            reviews.c.hospital_id == hospitals.c.id,
+            isouter=True
+        )
+        query = query.where(
+            self.table.c.id == doctor_id
+        )
+        rows = await self._db.fetch_all(query)
+        return [ReviewOut(**dict(row)) for row in rows] if rows else rows

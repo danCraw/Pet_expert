@@ -2,7 +2,6 @@ from dependency_injector import containers, providers
 from dependency_injector.wiring import inject, Provide
 from fastapi import APIRouter, Depends
 
-from app.db.repositories.client import ClientRepository
 from app.db.repositories.reply import ReplyRepository
 from app.models.reply import ReplyIn, ReplyOut
 

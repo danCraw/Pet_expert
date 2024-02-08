@@ -23,4 +23,3 @@ class AddressIn(AddressBase):
 
 class AddressOut(AddressBase):
     address_id: int
-

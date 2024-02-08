@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Table, Integer, Time, ForeignKey, DATE
+from sqlalchemy import Column, Table, Integer, ForeignKey, DATE
 
 from app.db.base import metadata
 from app.db.tables.hospitals import hospitals

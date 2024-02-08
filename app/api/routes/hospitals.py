@@ -22,7 +22,9 @@ class Container(containers.DeclarativeContainer):
 
 @router.get("/")
 @inject
-async def hospitals_list(hospital_repo: HospitalRepository = Depends(Provide[Container.hospitals])) -> list[HospitalOut]:
+async def hospitals_list(
+        hospital_repo: HospitalRepository = Depends(Provide[Container.hospitals])
+) -> list[HospitalOut]:
     hospital = await hospital_repo.list()
     return hospital
 
@@ -34,8 +36,10 @@ async def one_hospital(hospital_id: int, hospital_repo: HospitalRepository = Dep
     hospital = await hospital_repo.get(hospital_id)
     if hospital:
         return hospital
-    else:
-        raise HTTPException(status_code=UNPROCESSABLE_ENTITY, detail="hospital with the given Id not found")
+    raise HTTPException(
+        status_code=UNPROCESSABLE_ENTITY,
+        detail="hospital with the given Id not found"
+    )
 
 
 @router.post("/")
@@ -59,8 +63,10 @@ async def update_hospital(hospital: HospitalIn, hospital_repo: HospitalRepositor
     hospital = await hospital_repo.update(hospital)
     if hospital:
         return hospital
-    else:
-        raise HTTPException(status_code=UNPROCESSABLE_ENTITY, detail="hospital with the given Id not found")
+    raise HTTPException(
+        status_code=UNPROCESSABLE_ENTITY,
+        detail="hospital with the given Id not found"
+    )
 
 
 @router.delete("/{hospital_id}")
@@ -70,8 +76,10 @@ async def delete_hospital(hospital_id: int, hospital_repo: HospitalRepository = 
     hospital = await hospital_repo.delete(hospital_id)
     if hospital:
         return hospital
-    else:
-        raise HTTPException(status_code=UNPROCESSABLE_ENTITY, detail="hospital with the given Id not found")
+    raise HTTPException(
+        status_code=UNPROCESSABLE_ENTITY,
+        detail="hospital with the given Id not found"
+    )
 
 
 @router.get("/reviews/{hospital_id}")
@@ -87,11 +95,10 @@ async def hospital_reviews(
     )
     if reviews:
         return reviews
-    else:
-        raise HTTPException(
-            status_code=UNPROCESSABLE_ENTITY,
-            detail="hospital with the given Id not found"
-        )
+    raise HTTPException(
+        status_code=UNPROCESSABLE_ENTITY,
+        detail="hospital with the given Id not found"
+    )
 
 
 container = Container()

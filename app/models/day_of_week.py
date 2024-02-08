@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import Optional
 
 from app.models.base import BaseSchema
@@ -14,4 +13,3 @@ class DayOfWeekIn(DayOfWeekBase):
 
 class DayOfWeekOut(DayOfWeekBase):
     day_of_week_id: int
-

@@ -39,7 +39,9 @@ class Container(containers.DeclarativeContainer):
 
 @router.get("/")
 @inject
-async def clients_list(client_repo: ClientRepository = Depends(Provide[Container.clients])) -> list[ClientOut]:
+async def clients_list(
+        client_repo: ClientRepository = Depends(Provide[Container.clients])
+) -> list[ClientOut]:
     client = await client_repo.list()
     return client
 
@@ -51,19 +53,28 @@ async def one_client(client_id: int, client_repo: ClientRepository = Depends(
     client = await client_repo.get(client_id)
     if client:
         return client
-    else:
-        raise HTTPException(status_code=UNPROCESSABLE_ENTITY, detail="client with the given Id not found")
+    raise HTTPException(
+        status_code=UNPROCESSABLE_ENTITY,
+        detail="client with the given Id not found"
+    )
 
 
 @router.post("/")
 @inject
 async def create_client(client: ClientIn,
-                        client_repo: ClientRepository = Depends(Provide[Container.clients])
-                        ) -> ClientOut:
+                        client_repo: ClientRepository = Depends(Provide[Container.clients]),
+                        redis: aioredis.Redis = Depends(get_redis)
+                        ) -> dict[str, str | Any]:
     client.password_hash = str(hash(client.password))
     client.password = None
     client = await client_repo.create(client)
-    return client
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": client.name},
+        expires_delta=access_token_expires
+    )
+    await redis.set(client.name, access_token)
+    return {'access_token': access_token, 'client': client}
 
 
 @router.put("/")
@@ -76,8 +87,10 @@ async def update_client(client: ClientIn, client_repo: ClientRepository = Depend
     client = await client_repo.update(client.dict(exclude_none=True))
     if client:
         return client
-    else:
-        raise HTTPException(status_code=UNPROCESSABLE_ENTITY, detail="client with the given Id not found")
+    raise HTTPException(
+        status_code=UNPROCESSABLE_ENTITY,
+        detail="client with the given Id not found"
+    )
 
 
 @router.delete("/{client_id}")
@@ -87,8 +100,10 @@ async def delete_client(client_id: int, client_repo: ClientRepository = Depends(
     client = await client_repo.delete(client_id)
     if client:
         return client
-    else:
-        raise HTTPException(status_code=UNPROCESSABLE_ENTITY, detail="client with the given Id not found")
+    raise HTTPException(
+        status_code=UNPROCESSABLE_ENTITY,
+        detail="client with the given Id not found"
+    )
 
 
 @router.post("/favorite_hospitals/{client_id}")
@@ -100,34 +115,46 @@ async def add_hospital_to_favourite(favourite_hospital: FavouriteHospital,
     favourite_hospital = await favorite_hospitals_repo.create(favourite_hospital)
     if favourite_hospital:
         return favourite_hospital
-    else:
-        raise HTTPException(status_code=UNPROCESSABLE_ENTITY, detail="error in adding hospital to favourite")
+    raise HTTPException(
+        status_code=UNPROCESSABLE_ENTITY,
+        detail="error in adding hospital to favourite"
+    )
 
 
 @router.get("/favorite_hospitals/{client_id}")
 @inject
 async def favorite_hospitals(client_id: int,
-                             hospitals_repo: HospitalRepository = Depends(Provide[Container.hospitals]),
-                             client_repo: ClientRepository = Depends(Provide[Container.clients])
+                             hospitals_repo: HospitalRepository = Depends(
+                                 Provide[Container.hospitals]
+                             ),
+                             client_repo: ClientRepository = Depends(
+                                 Provide[Container.clients]
+                             )
                              ) -> list[HospitalOut]:
     hospitals = await client_repo.get_favorite_hospitals(client_id, hospitals_repo)
     if hospitals:
         return hospitals
-    else:
-        raise HTTPException(status_code=UNPROCESSABLE_ENTITY, detail="client with the given Id not found")
+    raise HTTPException(
+        status_code=UNPROCESSABLE_ENTITY,
+        detail="client with the given Id not found"
+    )
 
 
 @router.post("/favorite_doctors/{client_id}")
 @inject
 async def add_doctor_to_favourite(
         favourite_doctor: FavouriteDoctor,
-        favorite_doctors_repo: FavoriteDoctorsRepository = Depends(Provide[Container.favorite_doctors])
+        favorite_doctors_repo: FavoriteDoctorsRepository = Depends(
+            Provide[Container.favorite_doctors]
+        )
 ) -> list[DoctorOut]:
     doctors = await favorite_doctors_repo.create(favourite_doctor)
     if doctors:
         return doctors
-    else:
-        raise HTTPException(status_code=UNPROCESSABLE_ENTITY, detail="client with the given Id not found")
+    raise HTTPException(
+        status_code=UNPROCESSABLE_ENTITY,
+        detail="client with the given Id not found"
+    )
 
 
 @router.get("/favorite_doctors/{client_id}")
@@ -140,8 +167,10 @@ async def favorite_doctors(
     doctors = await client_repo.get_favorite_doctors(client_id, doctors_repo)
     if doctors is not None:
         return doctors
-    else:
-        raise HTTPException(status_code=UNPROCESSABLE_ENTITY, detail="client with the given Id not found")
+    raise HTTPException(
+        status_code=UNPROCESSABLE_ENTITY,
+        detail="client with the given Id not found"
+    )
 
 
 @router.post("/reviews/{client_id}")

@@ -93,7 +93,13 @@ class ReviewRepository(BaseRepository):
                                          .select()
                                          .where(visits.c.id == values.visit_id)
                                          )
-        client_name, client_surname, date_of_receipt, hospital_name, doctor_name = await self._review_additional_info(
+        (
+            client_name,
+            client_surname,
+            date_of_receipt,
+            hospital_name,
+            doctor_name,
+        ) = await self._review_additional_info(
             client_id=dict(visit)['client_id'],
             visit_id=values.visit_id,
             doctor_id=values.doctor_id,
@@ -112,19 +118,25 @@ class ReviewRepository(BaseRepository):
         return self._schema_out(**dict_values)
 
     async def get(self,
-                  review_id: int,
+                  id_: int,
                   ):
         row = await self._db.fetch_one(query=self.table
         .select()
         .where(
-            self.table.c.id == review_id)
+            self.table.c.id == id_)
         )
         review = dict(row)
         visit = await self._db.fetch_one(query=visits
                                          .select()
                                          .where(visits.c.id == review['visit_id'])
                                          )
-        client_name, client_surname, date_of_receipt, hospital_name, doctor_name = await self._review_additional_info(
+        (
+            client_name,
+            client_surname,
+            date_of_receipt,
+            hospital_name,
+            doctor_name
+        ) = await self._review_additional_info(
             client_id=dict(visit)['client_id'],
             visit_id=review['visit_id'],
             doctor_id=review['doctor_id'],
@@ -141,10 +153,10 @@ class ReviewRepository(BaseRepository):
         else:
             return row
 
-    async def delete(self, review_id: Union[int, str]) -> _schema_out:
+    async def delete(self, id_: Union[int, str]) -> _schema_out:
         result = await self._db.execute(query=self.table
                                         .delete()
-                                        .where(column(self.table.c[0].description) == review_id)
+                                        .where(column(self.table.c[0].description) == id_)
                                         .returning(self.table.c[0]))
         return result
 

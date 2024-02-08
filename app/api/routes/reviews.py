@@ -49,8 +49,10 @@ async def one_review(
     review = await review_repo.get(review_id)
     if review:
         return review
-    else:
-        raise HTTPException(status_code=UNPROCESSABLE_ENTITY, detail="review with the given Id not found")
+    raise HTTPException(
+        status_code=UNPROCESSABLE_ENTITY,
+        detail="review with the given Id not found"
+    )
 
 
 @router.post("/")
@@ -71,8 +73,10 @@ async def delete_review(
     review = await review_repo.delete(review_id)
     if review:
         return review
-    else:
-        raise HTTPException(status_code=UNPROCESSABLE_ENTITY, detail="review with the given Id not found")
+    raise HTTPException(
+        status_code=UNPROCESSABLE_ENTITY,
+        detail="review with the given Id not found"
+    )
 
 
 container = Container()
