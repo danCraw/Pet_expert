@@ -29,6 +29,15 @@ class GlobalConfig(BaseSettings):
     DB_MAX_SIZE: int = 15
     DB_FORCE_ROLL_BACK: bool = False
 
+    # Redis config
+    REDIS_HOST: str = os.environ.get("REDIS_HOST")
+    REDIS_PORT: int = os.environ.get("REDIS_PORT")
+
+    # JWT config
+    TOKEN_SECRET_KEY: str = os.environ.get("TOKEN_SECRET_KEY")
+    TOKEN_ALGORITHM: str = os.environ.get("TOKEN_ALGORITHM")
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = os.environ.get("ACCESS_TOKEN_EXPIRE_MINUTES")
+
 
 class DevConfig(GlobalConfig):
     DESCRIPTION = "Dev web description"

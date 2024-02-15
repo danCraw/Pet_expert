@@ -1,22 +1,27 @@
 import sys
 from http.client import UNPROCESSABLE_ENTITY
+from typing import Any
+
 from dependency_injector import containers, providers
 from dependency_injector.wiring import inject, Provide
 from fastapi import APIRouter, HTTPException, Depends
 
 from app.db.repositories.client import ClientRepository
 from app.db.repositories.doctor import DoctorRepository
-from app.db.repositories.hospital import HospitalRepository
 from app.db.repositories.favorite_doctor import FavoriteDoctorsRepository
 from app.db.repositories.favourite_hospital import FavoriteHospitalsRepository
+from app.db.repositories.hospital import HospitalRepository
 from app.db.repositories.review import ReviewRepository
 from app.db.repositories.visit import VisitRepository
-from app.models.client import ClientIn, ClientOut
+from app.models.auth import UpdateClient
+from app.models.client import ClientIn, ClientOut, ClientCredentials
 from app.models.doctor import DoctorOut
 from app.models.favorite_doctor import FavouriteDoctor
 from app.models.favorite_hospital import FavouriteHospital
 from app.models.hospital import HospitalOut
 from app.models.review import ReviewOut
+from app.redis.auth import authorize_client
+from app.redis.tokens import create_client_access_token
 
 router = APIRouter()
 
@@ -37,60 +42,56 @@ class Container(containers.DeclarativeContainer):
     reviews = providers.Factory(ReviewRepository)
 
 
-@router.get("/")
+@router.post("/auth")
 @inject
-async def clients_list(
-        client_repo: ClientRepository = Depends(Provide[Container.clients])
-) -> list[ClientOut]:
-    client = await client_repo.list()
-    return client
-
-
-@router.get("/{client_id}")
-@inject
-async def one_client(client_id: int, client_repo: ClientRepository = Depends(
-    Provide[Container.clients])) -> ClientOut:
-    client = await client_repo.get(client_id)
+async def auth_client(
+        credentials: ClientCredentials,
+        client_repo: ClientRepository = Depends(Provide[Container.clients]),
+) -> dict[str, str | Any]:
+    client = await client_repo.get_by_credentials(
+        credentials.client_email,
+        str(hash(credentials.password)),
+    )
     if client:
-        return client
+        access_token = await create_client_access_token(client)
+        return {'access_token': access_token, 'client': client}
     raise HTTPException(
         status_code=UNPROCESSABLE_ENTITY,
-        detail="client with the given Id not found"
+        detail="client with the given params not found"
     )
 
 
 @router.post("/")
 @inject
-async def create_client(client: ClientIn,
-                        client_repo: ClientRepository = Depends(Provide[Container.clients]),
-                        redis: aioredis.Redis = Depends(get_redis)
-                        ) -> dict[str, str | Any]:
+async def register_client(client: ClientIn,
+                          client_repo: ClientRepository = Depends(Provide[Container.clients]),
+                          ) -> dict[str, str | Any]:
     client.password_hash = str(hash(client.password))
     client.password = None
     client = await client_repo.create(client)
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        data={"sub": client.name},
-        expires_delta=access_token_expires
-    )
-    await redis.set(client.name, access_token)
+    access_token = await create_client_access_token(client)
     return {'access_token': access_token, 'client': client}
 
 
 @router.put("/")
 @inject
-async def update_client(client: ClientIn, client_repo: ClientRepository = Depends(
-    Provide[Container.clients])) -> ClientOut:
-    if client.password:
-        client.password_hash = str(hash(client.password))
-        client.password = None
-    client = await client_repo.update(client.dict(exclude_none=True))
-    if client:
-        return client
-    raise HTTPException(
-        status_code=UNPROCESSABLE_ENTITY,
-        detail="client with the given Id not found"
-    )
+async def update_client(
+        client: UpdateClient,
+        client_repo: ClientRepository = Depends(Provide[Container.clients]),
+) -> ClientOut:
+    @authorize_client
+    async def update_client_authorized(
+            client_repo: ClientRepository,
+            client: UpdateClient) -> ClientOut:
+        if client.password:
+            client.password_hash = str(hash(client.password))
+            client.password = None
+        client = await client_repo.update(client.dict(exclude_none=True))
+        if client:
+            return client
+        raise HTTPException(status_code=UNPROCESSABLE_ENTITY, detail="Client with the given ID not found")
+
+    return await update_client_authorized(client.token, client_repo, client)
 
 
 @router.delete("/{client_id}")
@@ -124,12 +125,8 @@ async def add_hospital_to_favourite(favourite_hospital: FavouriteHospital,
 @router.get("/favorite_hospitals/{client_id}")
 @inject
 async def favorite_hospitals(client_id: int,
-                             hospitals_repo: HospitalRepository = Depends(
-                                 Provide[Container.hospitals]
-                             ),
-                             client_repo: ClientRepository = Depends(
-                                 Provide[Container.clients]
-                             )
+                             hospitals_repo: HospitalRepository = Depends(Provide[Container.hospitals]),
+                             client_repo: ClientRepository = Depends(Provide[Container.clients]),
                              ) -> list[HospitalOut]:
     hospitals = await client_repo.get_favorite_hospitals(client_id, hospitals_repo)
     if hospitals:

@@ -1,6 +1,7 @@
 from typing import Type
 
 import sqlalchemy
+from sqlalchemy import select
 
 from app.db.repositories.base import BaseRepository
 from app.db.repositories.doctor import DoctorRepository
@@ -34,6 +35,14 @@ class ClientRepository(BaseRepository):
     def _schema_in(self) -> Type[ClientIn]:
         return ClientIn
 
+    async def get_by_credentials(self, email: str, password_hash: str):
+        query = select(self.table)
+        query = query.where(self.table.c.email == email,
+                            self.table.c.password_hash == password_hash)
+        client = await self._db.fetch_one(query)
+
+        return ClientOut.parse_obj(client) if client else client
+
     async def get_favorite_hospitals(
             self,
             client_id: int,
@@ -63,23 +72,23 @@ class ClientRepository(BaseRepository):
                                    ) -> list[DoctorOut]:
         rows = await doctors_repo._db.fetch_all(
             doctors.select()
-        .join(favorite_doctors,
-              doctors.c.id == favorite_doctors.c.doctor_id,
-              isouter=True)
-        .where(favorite_doctors.c.client_id == client_id)
-        .with_only_columns(
-            doctors.c.id,
-            doctors.c.name,
-            doctors.c.surname,
-            doctors.c.patronomic,
-            doctors.c.photo,
-            doctors.c.email,
-            doctors.c.rating,
-            doctors.c.education,
-            doctors.c.treatment_profile,
-            doctors.c.work_experience,
-            doctors.c.approved
-        ))
+            .join(favorite_doctors,
+                  doctors.c.id == favorite_doctors.c.doctor_id,
+                  isouter=True)
+            .where(favorite_doctors.c.client_id == client_id)
+            .with_only_columns(
+                doctors.c.id,
+                doctors.c.name,
+                doctors.c.surname,
+                doctors.c.patronomic,
+                doctors.c.photo,
+                doctors.c.email,
+                doctors.c.rating,
+                doctors.c.education,
+                doctors.c.treatment_profile,
+                doctors.c.work_experience,
+                doctors.c.approved
+            ))
         return [DoctorOut(**dict(row)) for row in rows] if rows else rows
 
     async def get_reviews(self,

@@ -2,7 +2,7 @@ from datetime import datetime
 
 import pytest
 
-from app.api.routes.clients import create_client, one_client, delete_client, update_client, add_hospital_to_favourite, \
+from app.api.routes.clients import auth_client, auth_client, delete_client, update_client, add_hospital_to_favourite, \
     favorite_hospitals, add_doctor_to_favourite, favorite_doctors, client_reviews
 from app.models.client import ClientIn, ClientOut
 from app.models.doctor import DoctorIn, DoctorOut
@@ -25,13 +25,13 @@ from tests.test_models import review
 
 @pytest.mark.asyncio
 async def test_create(db_connection, client: ClientIn):
-    response: ClientOut = await create_client(client)
+    response: ClientOut = await auth_client(client)
     assert response == ClientOut(**client.dict())
 
 
 @pytest.mark.asyncio
 async def test_read(db_client: ClientIn):
-    response = await one_client(db_client.id)
+    response = await auth_client(db_client.id)
     assert response == ClientOut(**db_client.dict())
 
 
@@ -54,7 +54,7 @@ async def test_update(db_client: ClientIn):
 
 @pytest.mark.asyncio
 async def test_delete(db_connection, client: ClientIn):
-    await create_client(client)
+    await auth_client(client)
     response = await delete_client(client.id)
     assert response == ClientOut(**client.dict())
 
