@@ -5,7 +5,7 @@ CREATE TABLE clients (
         patronomic VARCHAR(65) NOT NULL,
         photo VARCHAR(65) NOT NULL,
         phone VARCHAR(65) NOT NULL,
-        email VARCHAR(65) NOT NULL,
+        email VARCHAR(65) UNIQUE NOT NULL,
         password_hash VARCHAR(65) NOT NULL,
         PRIMARY KEY (id)
 );
@@ -17,7 +17,7 @@ CREATE TABLE doctors (
         surname VARCHAR(65) NOT NULL,
         patronomic VARCHAR(65) NOT NULL,
         photo VARCHAR(65) NOT NULL,
-        email VARCHAR(65) NOT NULL,
+        email VARCHAR(65) UNIQUE NOT NULL,
         password_hash VARCHAR(65) NOT NULL,
         rating FLOAT NOT NULL,
         education VARCHAR(150) NOT NULL,
@@ -48,7 +48,7 @@ CREATE TABLE hospitals (
     description VARCHAR(150) NOT NULL,
     photos VARCHAR(65)[] NOT NULL,
     phone VARCHAR(65),
-    email VARCHAR(65) NOT NULL,
+    email VARCHAR(65) UNIQUE NOT NULL,
     password_hash VARCHAR(65) NOT null,
     approved BOOLEAN NOT NULL,
     rating FLOAT NOT NULL,
