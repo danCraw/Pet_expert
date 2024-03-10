@@ -175,6 +175,11 @@ CREATE TABLE schedule (
     FOREIGN KEY (work_day_id) REFERENCES work_day (id) ON DELETE cascade
 );
 
+CREATE TABLE admins (
+    admin_id INTEGER NOT NULL,
+    FOREIGN KEY (admin_id) REFERENCES clients (id) ON DELETE cascade
+);
+
 CREATE OR REPLACE FUNCTION update_doctor_average()
 RETURNS TRIGGER AS
 $$

@@ -48,7 +48,8 @@ class BaseRepository(abc.ABC):
 
     async def _list(self) -> List[Record]:
         query = self.table.select()
-        return await self._db.fetch_all(query=query)
+        rows = await self._db.fetch_all(query=query)
+        return rows
 
     async def list(self) -> List:
         rows = await self._list()

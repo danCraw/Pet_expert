@@ -43,11 +43,11 @@ class ClientRepository(BaseRepository):
 
         return ClientOut.parse_obj(client) if client else client
 
-    async def get_favorite_hospitals(
+    async def get_favourite_hospitals(
             self,
             client_id: int,
-            hospitals_repo: HospitalRepository,
     ) -> list[HospitalOut]:
+        hospitals_repo = HospitalRepository()
         rows = await hospitals_repo._db.fetch_all(hospitals.select()
         .join(favorite_hospitals,
               hospitals.c.id == favorite_hospitals.c.hospital_id,
@@ -99,6 +99,7 @@ class ClientRepository(BaseRepository):
         .join(visits, reviews.c.visit_id == visits.c.id, isouter=True)
         .join(doctors, reviews.c.doctor_id == doctors.c.id, isouter=True)
         .join(hospitals, reviews.c.hospital_id == hospitals.c.id, isouter=True)
+        .join(self.table, visits.c.client_id == self.table.c.id)
         .where(visits.c.client_id == client_id)
         .with_only_columns(
             self.table.c.name.label('client_name'),
@@ -113,4 +114,5 @@ class ClientRepository(BaseRepository):
             reviews.c.review_time,
             reviews.c.confirmed,
         ))
+
         return [review_repo._schema_out(**dict(row)) for row in rows] if rows else rows

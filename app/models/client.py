@@ -31,11 +31,12 @@ class ClientOut(ClientBase):
 
 
 class ClientCredentials(BaseModel):
-    client_email: str
+    email: str
     password: str
 
 
 class ClientUpdate(BaseModel):
+    id: Optional[int]
     name: Optional[str]
     surname: Optional[str]
     patronomic: Optional[str]
@@ -43,3 +44,4 @@ class ClientUpdate(BaseModel):
     phone: Optional[str]
     email: Optional[str]
     password: Optional[str]
+    password_hash: Optional[str]

@@ -5,7 +5,7 @@ from app.db.tables.favorite_hospital import favorite_hospitals
 from app.models.favorite_hospital import FavouriteHospital
 
 
-class FavoriteHospitalsRepository(BaseRepository):
+class FavouriteHospitalsRepository(BaseRepository):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 

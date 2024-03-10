@@ -1,19 +1,24 @@
 import aioredis
+import functools
 
 from app.api.exeptions import NotAuthorizedError
+from app.db.repositories.admin import AdminRepository
 from app.redis.base import get_redis
 
 
-def authorize_client(func):
+def admin(func):
+    @functools.wraps(func)
     async def wrapper(*args, **kwargs):
-        client_repo, client = args
+        token = kwargs.get('token')
+        admin_repo = AdminRepository()
 
         redis: aioredis.Redis = await get_redis()
 
-        client_id = await redis.get(client.token)
-        client = await client_repo.get(int(client_id))
+        id_ = await redis.get(token)
 
-        if not client:
+        admin = await admin_repo.get(int(id_))
+
+        if not admin:
             raise NotAuthorizedError()
 
         return await func(*args, **kwargs)

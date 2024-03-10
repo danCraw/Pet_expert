@@ -14,6 +14,7 @@ class GlobalConfig(BaseSettings):
     SERVICE_NAME = "PetExpert"
     ENVIRONMENT: str = os.environ.get("ENVIRONMENT", "DEV")
     API_V1_STR: str = "/api/v1"
+    IS_TEST: bool = True
 
     # Database config
     DB_NAME: str = os.environ.get("DB_NAME")
