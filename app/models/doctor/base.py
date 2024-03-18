@@ -30,3 +30,19 @@ class DoctorOut(DoctorBase):
                 'exclude': {'password'}
             }
         }
+
+
+class DoctorUpdate(BaseSchema):
+    id: Optional[int]
+    name: Optional[str]
+    surname: Optional[str]
+    patronomic: Optional[str]
+    photo: Optional[str]
+    email: Optional[str]
+    password: Optional[str]
+    password_hash: Optional[str]
+    rating: Optional[float]
+    education: Optional[str]
+    treatment_profile: Optional[str]
+    work_experience: Optional[float]
+    approved: Optional[bool]

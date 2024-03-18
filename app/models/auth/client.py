@@ -1,20 +1,11 @@
-from pydantic import BaseModel
-
-from app.models.client import ClientUpdate
+from app.models.client.base import ClientUpdate
 from app.models.favorite_doctor import FavouriteDoctor
 from app.models.favorite_hospital import FavouriteHospital
-
-
-class Token(BaseModel):
-    token: str
+from app.models.auth.base import Token
 
 
 class UpdateClient(Token):
     update_data: ClientUpdate
-
-
-class IdClient(Token):
-    id: int
 
 
 class AddHospitalToFavouriteClient(Token):

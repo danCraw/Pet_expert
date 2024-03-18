@@ -13,10 +13,10 @@ from app.db.repositories.favourite_hospital import FavouriteHospitalsRepository
 from app.db.repositories.hospital import HospitalRepository
 from app.db.repositories.review import ReviewRepository
 from app.db.repositories.visit import VisitRepository
-from app.models.auth import UpdateClient, IdClient, AddHospitalToFavouriteClient, FavouriteDoctorClient
-from app.models.client import ClientIn, ClientOut, ClientCredentials
-from app.models.doctor import DoctorOut
-from app.models.favorite_doctor import FavouriteDoctor
+from app.models.auth.base import IdModel
+from app.models.auth.client import UpdateClient, AddHospitalToFavouriteClient, FavouriteDoctorClient
+from app.models.client.base import ClientIn, ClientOut, ClientCredentials
+from app.models.doctor.base import DoctorOut
 from app.models.favorite_hospital import FavouriteHospital
 from app.models.hospital import HospitalOut
 from app.models.review import ReviewOut
@@ -97,7 +97,6 @@ async def update_client(
     if update_data.password:
         update_data.password_hash = str(hash(update_data.password))
         update_data.password = None
-    print(update_data)
     updated_client = await client_repo.update(update_data.dict(exclude_none=True))
     if updated_client:
         return updated_client
@@ -108,7 +107,7 @@ async def update_client(
 @client
 @inject
 async def delete_client(
-        client: IdClient,
+        client: IdModel,
         client_repo: ClientRepository = Depends(Provide[Container.clients]),
 ) -> list[ClientOut]:
     client = await client_repo.delete(client.id)
@@ -140,7 +139,7 @@ async def add_hospital_to_favourite(client: AddHospitalToFavouriteClient,
 
 @router.get("/favourite_hospitals/{client_id}")
 @inject
-async def favourite_hospitals(client: IdClient,
+async def favourite_hospitals(client: IdModel,
                               client_repo: ClientRepository = Depends(Provide[Container.clients]),
                               ) -> list[HospitalOut]:
     hospitals = await client_repo.get_favourite_hospitals(client.id)

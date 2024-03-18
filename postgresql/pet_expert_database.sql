@@ -76,9 +76,15 @@ CREATE TABLE reviews (
 CREATE TABLE replies (
     id INTEGER NOT NULL,
     review_id INTEGER NOT NULL,
+    client_id INTEGER,
+    doctor_id INTEGER,
+    hospital_id INTEGER,
     comment VARCHAR (2000) NOT NULL,
-    review_time TIMESTAMP NOT NULL,
-    FOREIGN KEY (review_id) REFERENCES reviews (id) ON DELETE CASCADE
+    reply_time TIMESTAMP NOT NULL,
+    FOREIGN KEY (review_id) REFERENCES reviews (id) ON DELETE CASCADE,
+    FOREIGN KEY (doctor_id) REFERENCES doctors (id) ON DELETE CASCADE,
+    FOREIGN KEY (hospital_id) REFERENCES hospitals (id) ON DELETE CASCADE,
+    CHECK (client_id IS NOT NULL OR doctor_id IS NOT NULL OR hospital_id IS NOT NULL)
 );
 
 CREATE TABLE filial (

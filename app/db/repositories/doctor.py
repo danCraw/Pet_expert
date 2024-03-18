@@ -10,7 +10,7 @@ from app.db.repositories.base import BaseRepository
 from app.db.tables.hospitals import hospitals
 from app.db.tables.reviews import reviews
 from app.db.tables.visits import visits
-from app.models.doctor import DoctorOut, DoctorIn
+from app.models.doctor.base import DoctorOut, DoctorIn
 from app.models.review import ReviewOut
 
 
@@ -47,13 +47,13 @@ class DoctorRepository(BaseRepository):
             reviews.c.confirmed,
         )
         query = query.join(
-            visits,
-            reviews.c.visit_id == visits.c.id,
+            reviews,
+            reviews.c.doctor_id == self.table.c.id,
             isouter=True
         )
         query = query.join(
-            reviews,
-            reviews.c.doctor_id == self.table.c.id,
+            visits,
+            reviews.c.visit_id == visits.c.id,
             isouter=True
         )
         query = query.join(

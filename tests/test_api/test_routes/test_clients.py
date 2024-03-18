@@ -3,11 +3,12 @@ from typing import Any
 
 import pytest
 
-from app.api.routes.clients import auth_client, auth_client, delete_client, update_client, add_hospital_to_favourite, \
+from app.api.routes.clients import auth_client, delete_client, update_client, add_hospital_to_favourite, \
     favourite_hospitals, add_doctor_to_favourite, favorite_doctors, client_reviews, register_client, one_client
-from app.models.auth import UpdateClient, IdClient, AddHospitalToFavouriteClient, FavouriteDoctorClient
-from app.models.client import ClientIn, ClientOut, ClientCredentials, ClientUpdate
-from app.models.doctor import DoctorIn, DoctorOut
+from app.models.auth.base import IdModel
+from app.models.auth.client import UpdateClient, AddHospitalToFavouriteClient, FavouriteDoctorClient
+from app.models.client.base import ClientIn, ClientOut, ClientCredentials, ClientUpdate
+from app.models.doctor.base import DoctorIn, DoctorOut
 from app.models.favorite_doctor import FavouriteDoctor
 from app.models.favorite_hospital import FavouriteHospital
 from app.models.hospital import HospitalIn, HospitalOut
@@ -25,6 +26,7 @@ from tests.test_models import visit
 from tests.test_models import review
 
 TOKEN = "test_token"
+
 
 @pytest.mark.asyncio
 async def test_create(db_connection, client: ClientIn):
@@ -68,7 +70,7 @@ async def test_update(db_client: ClientIn):
 @pytest.mark.asyncio
 async def test_delete(db_connection, client: ClientIn):
     await register_client(client)
-    client_delete = IdClient(id=client.id, token=TOKEN)
+    client_delete = IdModel(id=client.id, token=TOKEN)
     response = await delete_client(client=client_delete)
     assert response == ClientOut(**client.dict())
 
@@ -80,7 +82,7 @@ async def test_add_hospital_to_favourite(db_client: ClientIn, db_hospital: Hospi
     response = await add_hospital_to_favourite(client=client)
     assert response == test_favourite_hospital
 
-    id_client = IdClient(id=db_client.id, token=TOKEN)
+    id_client = IdModel(id=db_client.id, token=TOKEN)
     test_favorite_hospitals = await favourite_hospitals(client=id_client)
     assert test_favorite_hospitals == [HospitalOut(**db_hospital.dict())]
 

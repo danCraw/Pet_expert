@@ -14,8 +14,8 @@ from app.db.tables.favorite_hospital import favorite_hospitals
 from app.db.tables.hospitals import hospitals
 from app.db.tables.reviews import reviews
 from app.db.tables.visits import visits
-from app.models.client import ClientOut, ClientIn
-from app.models.doctor import DoctorOut
+from app.models.client.base import ClientOut, ClientIn
+from app.models.doctor.base import DoctorOut
 from app.models.hospital import HospitalOut
 
 

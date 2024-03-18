@@ -12,14 +12,15 @@ def client(func):
     async def wrapper(*args, **kwargs):
         client_repo = kwargs["client_repo"]
         client = kwargs["client"]
+
+        if config.IS_TEST:
+            return await func(*args, **kwargs)
+
         admin_repo = AdminRepository()
 
         redis: aioredis.Redis = await get_redis()
 
         id_ = await redis.get(client.token)
-
-        if config.IS_TEST:
-            return await func(*args, **kwargs)
 
         if not id_:
             raise NotAuthorizedError()

@@ -1,13 +1,16 @@
 import sys
+from http.client import UNPROCESSABLE_ENTITY
+
 from dependency_injector import containers, providers
 from dependency_injector.wiring import inject, Provide
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 
 from app.db.repositories.client import ClientRepository
 from app.db.repositories.doctor import DoctorRepository
 from app.db.repositories.hospital import HospitalRepository
-from app.models.client import ClientOut
-from app.models.doctor import DoctorOut
+from app.models.auth.base import IdModel
+from app.models.client.base import ClientOut
+from app.models.doctor.base import DoctorOut
 from app.models.hospital import HospitalOut
 from app.redis.admins.auth import admin
 
@@ -42,6 +45,22 @@ async def all_doctors(
 ) -> list[DoctorOut]:
     doctors = await doctor_repo.list()
     return doctors
+
+
+@router.delete("/doctors/{doctor_id}")
+@admin
+@inject
+async def delete_doctor(
+        doctor: IdModel,
+        doctor_repo: DoctorRepository = Depends(Provide[Container.doctors])
+) -> list[DoctorOut]:
+    doctor = await doctor_repo.delete(doctor.id)
+    if doctor:
+        return doctor
+    raise HTTPException(
+        status_code=UNPROCESSABLE_ENTITY,
+        detail="doctor with the given Id not found"
+    )
 
 
 @router.get("/hospitals")
