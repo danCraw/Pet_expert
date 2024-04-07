@@ -84,9 +84,33 @@ def visit() -> VisitIn:
 
 
 @pytest.fixture
-def reply() -> ReplyIn:
-    return ReplyIn(id='1',
-                   review_id='1',
-                   comment='comment',
-                   review_time=datetime.now(),
-                   )
+def client_reply() -> ReplyIn:
+    return ReplyIn(
+        id='1',
+        review_id='1',
+        client_id='1',
+        comment='client ncomment',
+        reply_time=datetime.now(),
+    )
+
+
+@pytest.fixture
+def doctor_reply() -> ReplyIn:
+    return ReplyIn(
+        id='1',
+        review_id='1',
+        doctor_id='1',
+        comment='doctor comment',
+        reply_time=datetime.now(),
+    )
+
+
+@pytest.fixture
+def hospital_reply() -> ReplyIn:
+    return ReplyIn(
+        id='1',
+        review_id='1',
+        hospital_id='1',
+        comment='hospital comment',
+        reply_time=datetime.now(),
+    )

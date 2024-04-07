@@ -67,7 +67,7 @@ async def test_update(db_doctor: DoctorIn):
                               approved=False,
                               )
     doctor = UpdateDoctor(update_data=updated_doctor, token=TOKEN)
-    doctor_after_update = await update_doctor(doctor=doctor)
+    doctor_after_update = await update_doctor(doctor)
     updated_doctor.password_hash = str(hash(updated_doctor.password))
     updated_doctor.password = None
     assert doctor_after_update == DoctorOut(**updated_doctor.dict())

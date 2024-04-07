@@ -63,8 +63,10 @@ async def auth_client(
 
 @router.get("/{client_id}")
 @inject
-async def one_client(client_id: int, client_repo: ClientRepository = Depends(
-    Provide[Container.clients])) -> ClientOut:
+async def one_client(
+        client_id: int,
+        client_repo: ClientRepository = Depends(Provide[Container.clients])
+) -> ClientOut:
     client = await client_repo.get(client_id)
     if client:
         return client

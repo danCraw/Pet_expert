@@ -7,6 +7,9 @@ Reply = Table(
             metadata,
             Column("id", Integer, primary_key=True),
             Column("review_id", Integer, ForeignKey('review.id'), nullable=False),
+            Column("client_id", Integer, ForeignKey('client.id'), nullable=False),
+            Column("doctor_id", Integer, ForeignKey('doctor.id'), nullable=False),
+            Column("hospital_id", Integer, ForeignKey('hospital.id'), nullable=False),
             Column("comment", String(2000), nullable=False),
-            Column("review_time", DateTime, nullable=False),
+            Column("reply_time", DateTime, nullable=False),
             )

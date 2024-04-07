@@ -62,7 +62,7 @@ async def test_update(db_client: ClientIn):
         email="update_email",
     )
     client = UpdateClient(update_data=updated_client, token=TOKEN)
-    client_after_update = await update_client(client=client)
+    client_after_update = await update_client(client)
     updated_client.password_hash = str(hash(updated_client.password))
     assert client_after_update == ClientOut(**updated_client.dict())
 
@@ -71,7 +71,7 @@ async def test_update(db_client: ClientIn):
 async def test_delete(db_connection, client: ClientIn):
     await register_client(client)
     client_delete = IdModel(id=client.id, token=TOKEN)
-    response = await delete_client(client=client_delete)
+    response = await delete_client(client_delete)
     assert response == ClientOut(**client.dict())
 
 
@@ -79,11 +79,11 @@ async def test_delete(db_connection, client: ClientIn):
 async def test_add_hospital_to_favourite(db_client: ClientIn, db_hospital: HospitalIn):
     test_favourite_hospital = FavouriteHospital(hospital_id=db_hospital.id, client_id=db_client.id)
     client = AddHospitalToFavouriteClient(favourite_hospital=test_favourite_hospital, token=TOKEN)
-    response = await add_hospital_to_favourite(client=client)
+    response = await add_hospital_to_favourite(client)
     assert response == test_favourite_hospital
 
     id_client = IdModel(id=db_client.id, token=TOKEN)
-    test_favorite_hospitals = await favourite_hospitals(client=id_client)
+    test_favorite_hospitals = await favourite_hospitals(id_client)
     assert test_favorite_hospitals == [HospitalOut(**db_hospital.dict())]
 
 
@@ -91,7 +91,7 @@ async def test_add_hospital_to_favourite(db_client: ClientIn, db_hospital: Hospi
 async def test_add_doctor_to_favourite(db_client: ClientIn, db_doctor: DoctorIn):
     test_favourite_doctor = FavouriteDoctor(doctor_id=db_doctor.id, client_id=db_client.id)
     client = FavouriteDoctorClient(favourite_doctor=test_favourite_doctor, token=TOKEN)
-    response = await add_doctor_to_favourite(client=client)
+    response = await add_doctor_to_favourite(client)
     assert response == test_favourite_doctor
 
     test_favorite_doctors = await favorite_doctors(client_id=db_client.id)

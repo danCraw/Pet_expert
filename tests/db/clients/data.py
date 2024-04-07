@@ -15,7 +15,7 @@ async def db_client(db_connection, client: ClientIn):
     client = result['client']
     yield client
     client = IdModel(token="test_token", id=client.id)
-    await delete_client(client=client)
+    await delete_client(client)
 
 
 @pytest_asyncio.fixture
