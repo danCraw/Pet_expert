@@ -11,7 +11,7 @@ from app.db.repositories.hospital import HospitalRepository
 from app.models.auth.base import IdModel
 from app.models.client.base import ClientOut
 from app.models.doctor.base import DoctorOut
-from app.models.hospital import HospitalOut
+from app.models.hospital.base import HospitalOut
 from app.redis.admins.auth import admin
 
 router = APIRouter()

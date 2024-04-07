@@ -5,7 +5,7 @@ from typing import Dict, List, Union
 import databases
 import sqlalchemy
 from asyncpg import Record
-from sqlalchemy import column
+from sqlalchemy import column, select
 
 from app.db.base import database
 from app.models.base import BaseIdSchema, BaseSchema
@@ -102,3 +102,11 @@ class BaseRepository(abc.ABC):
 
             await self._db.execute(query=query)
         return row
+
+    async def get_by_credentials(self, email: str, password_hash: str):
+        query = select(self.table)
+        query = query.where(self.table.c.email == email,
+                            self.table.c.password_hash == password_hash)
+        obj = await self._db.fetch_one(query)
+
+        return self._schema_out.parse_obj(obj) if obj else obj

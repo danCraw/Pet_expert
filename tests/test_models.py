@@ -4,7 +4,7 @@ import pytest
 
 from app.models.client.base import ClientIn
 from app.models.doctor.base import DoctorIn
-from app.models.hospital import HospitalIn
+from app.models.hospital.base import HospitalIn
 from app.models.reply import ReplyIn
 from app.models.review import ReviewIn
 from app.models.visit import VisitIn

@@ -16,7 +16,7 @@ from app.db.tables.reviews import reviews
 from app.db.tables.visits import visits
 from app.models.client.base import ClientOut, ClientIn
 from app.models.doctor.base import DoctorOut
-from app.models.hospital import HospitalOut
+from app.models.hospital.base import HospitalOut
 
 
 class ClientRepository(BaseRepository):
@@ -34,14 +34,6 @@ class ClientRepository(BaseRepository):
     @property
     def _schema_in(self) -> Type[ClientIn]:
         return ClientIn
-
-    async def get_by_credentials(self, email: str, password_hash: str):
-        query = select(self.table)
-        query = query.where(self.table.c.email == email,
-                            self.table.c.password_hash == password_hash)
-        client = await self._db.fetch_one(query)
-
-        return ClientOut.parse_obj(client) if client else client
 
     async def get_favourite_hospitals(
             self,

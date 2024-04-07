@@ -1,11 +1,16 @@
+from typing import Any
+
 import pytest_asyncio
 
-from app.api.routes.hospitals import delete_hospital, create_hospital
-from app.models.hospital import HospitalIn, HospitalOut
+from app.api.routes.hospitals import delete_hospital, register_hospital
+from app.models.auth.base import IdModel
+from app.models.hospital.base import HospitalIn
 
 
 @pytest_asyncio.fixture
 async def db_hospital(db_connection, hospital: HospitalIn):
-    hospital: HospitalOut = await create_hospital(hospital)
+    result: dict[str, str | Any] = await register_hospital(hospital)
+    hospital = result['hospital']
     yield hospital
-    await delete_hospital(hospital.id)
+    hospital = IdModel(token="test_token", id=hospital.id)
+    await delete_hospital(hospital)

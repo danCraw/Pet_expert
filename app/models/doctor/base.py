@@ -46,3 +46,8 @@ class DoctorUpdate(BaseSchema):
     treatment_profile: Optional[str]
     work_experience: Optional[float]
     approved: Optional[bool]
+
+
+class DoctorCredentials(BaseSchema):
+    email: str
+    password: str

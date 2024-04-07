@@ -18,7 +18,7 @@ from app.models.auth.client import UpdateClient, AddHospitalToFavouriteClient, F
 from app.models.client.base import ClientIn, ClientOut, ClientCredentials
 from app.models.doctor.base import DoctorOut
 from app.models.favorite_hospital import FavouriteHospital
-from app.models.hospital import HospitalOut
+from app.models.hospital.base import HospitalOut
 from app.models.review import ReviewOut
 from app.redis.clients.auth import client
 from app.redis.tokens import create_access_token
