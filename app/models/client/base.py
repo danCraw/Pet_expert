@@ -2,7 +2,7 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-from app.models.base import BaseSchema
+from app.models.base import BaseSchema, BaseCredentials
 
 
 class ClientBase(BaseSchema):
@@ -30,11 +30,6 @@ class ClientOut(ClientBase):
         }
 
 
-class ClientCredentials(BaseModel):
-    email: str
-    password: str
-
-
 class ClientUpdate(BaseModel):
     id: Optional[int]
     name: Optional[str]
@@ -45,3 +40,7 @@ class ClientUpdate(BaseModel):
     email: Optional[str]
     password: Optional[str]
     password_hash: Optional[str]
+
+
+class ClientCredentials(BaseCredentials):
+    pass

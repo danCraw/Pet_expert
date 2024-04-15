@@ -1,6 +1,6 @@
 from typing import Optional
 
-from app.models.base import BaseSchema
+from app.models.base import BaseSchema, BaseCredentials
 
 
 class HospitalBase(BaseSchema):
@@ -42,6 +42,5 @@ class HospitalUpdate(BaseSchema):
     password_hash: Optional[str]
 
 
-class HospitalCredentials(BaseSchema):
-    email: str
-    password: str
+class HospitalCredentials(BaseCredentials):
+    pass

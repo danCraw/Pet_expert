@@ -8,7 +8,7 @@ from fastapi import APIRouter, HTTPException, Depends
 
 from app.db.repositories.doctor import DoctorRepository
 from app.models.auth.doctor import UpdateDoctor
-from app.models.doctor.base import DoctorIn
+from app.models.doctor.base import DoctorIn, DoctorCredentials
 from app.models.doctor.base import DoctorOut
 from app.models.review import ReviewOut
 from app.redis.tokens import create_access_token
@@ -19,6 +19,25 @@ router = APIRouter()
 
 class Container(containers.DeclarativeContainer):
     doctors = providers.Factory(DoctorRepository)
+
+
+@router.post("/auth")
+@inject
+async def auth_hospital(
+        credentials: DoctorCredentials,
+        hospital_repo: DoctorRepository = Depends(Provide[Container.doctors]),
+) -> dict[str, str | Any]:
+    client = await hospital_repo.get_by_credentials(
+        credentials.email,
+        str(hash(credentials.password)),
+    )
+    if client:
+        access_token = await create_access_token(client)
+        return {'access_token': access_token, 'client': client}
+    raise HTTPException(
+        status_code=UNPROCESSABLE_ENTITY,
+        detail="hospital with the given params not found"
+    )
 
 
 @router.get("/{doctor_id}")
@@ -57,7 +76,6 @@ async def update_doctor(
         doctor_repo: DoctorRepository = Depends(Provide[Container.doctors])
 ) -> DoctorOut:
     update_data = doctor.update_data
-    print(update_data)
     if update_data.password:
         update_data.password_hash = str(hash(update_data.password))
         update_data.password = None

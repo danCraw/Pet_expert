@@ -9,3 +9,8 @@ class BaseSchema(BaseModel):
 
 class BaseIdSchema(BaseSchema):
     id: str
+
+
+class BaseCredentials(BaseSchema):
+    email: str
+    password: str
