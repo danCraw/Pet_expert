@@ -6,6 +6,7 @@ import databases
 import sqlalchemy
 from asyncpg import Record
 from sqlalchemy import column, select
+from sqlalchemy.sql import Select
 
 from app.db.base import database
 from app.models.base import BaseIdSchema, BaseSchema
@@ -46,13 +47,13 @@ class BaseRepository(abc.ABC):
             values.pop('password')
         return values
 
-    async def _list(self) -> List[Record]:
+    def _list_query(self) -> Select:
         query = self.table.select()
-        rows = await self._db.fetch_all(query=query)
-        return rows
+        return query
 
     async def list(self) -> List:
-        rows = await self._list()
+        query = self._list_query()
+        rows = await self._db.fetch_all(query=query)
         return [self._schema_out(**dict(row)) for row in rows]
 
     async def create(self, values: Union[BaseSchema, Dict]) -> _schema_out:

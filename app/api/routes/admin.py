@@ -36,17 +36,6 @@ async def all_clients(
     return clients
 
 
-@router.get("/doctors")
-@admin
-@inject
-async def all_doctors(
-        token: str,
-        doctor_repo: DoctorRepository = Depends(Provide[Container.doctors]),
-) -> list[DoctorOut]:
-    doctors = await doctor_repo.list()
-    return doctors
-
-
 @router.delete("/doctors/{doctor_id}")
 @admin
 @inject

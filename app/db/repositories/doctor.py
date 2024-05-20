@@ -1,9 +1,11 @@
-from typing import Type
+from typing import Type, List
 
 import sqlalchemy
-from sqlalchemy import select
+from sqlalchemy import select, func
 
+from app.db.tables.address import address
 from app.db.tables.clients import clients
+from app.db.tables.doctor_hospital import doctor_hospital
 from app.db.tables.doctors import doctors
 
 from app.db.repositories.base import BaseRepository
@@ -11,6 +13,7 @@ from app.db.tables.hospitals import hospitals
 from app.db.tables.reviews import reviews
 from app.db.tables.visits import visits
 from app.models.doctor.base import DoctorOut, DoctorIn
+from app.models.doctor.filters import DoctorFilterModel
 from app.models.review import ReviewOut
 
 
@@ -29,6 +32,39 @@ class DoctorRepository(BaseRepository):
     @property
     def _schema_in(self) -> Type[DoctorIn]:
         return DoctorIn
+
+    async def filtered_list(self, filters: DoctorFilterModel) -> List:
+        query = self._list_query()
+        if filters.name:
+            query = query.where(
+                func.lower(self.table.c.name).like(filters.name.lower())
+            )
+        elif filters.surname:
+            query = query.where(
+                func.lower(self.table.c.surname).like(filters.surname.lower())
+            )
+        elif filters.patronomic:
+            query = query.where(
+                func.lower(self.table.c.patronomic).like(filters.patronomic.lower())
+            )
+        elif filters.city:
+            query = query.join(
+                doctor_hospital,
+                self.table.c.id == doctor_hospital.c.doctor_id
+            )
+            query = query.join(
+                hospitals,
+                self.table.c.hospital_id == hospitals.c.id
+            )
+            query = query.join(
+                address,
+                self.table.c.hospital_id == address.c.hospital_id
+            )
+            query = query.where(
+                func.lower(self.table.c.city).like(filters.city.lower())
+            )
+        rows = await self._db.fetch_all(query=query)
+        return [self._schema_out(**dict(row)) for row in rows]
 
     async def get_reviews(self,
                           doctor_id: int,

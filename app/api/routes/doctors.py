@@ -10,6 +10,7 @@ from app.db.repositories.doctor import DoctorRepository
 from app.models.auth.doctor import UpdateDoctor
 from app.models.doctor.base import DoctorIn, DoctorCredentials
 from app.models.doctor.base import DoctorOut
+from app.models.doctor.filters import DoctorFilterModel
 from app.models.review import ReviewOut
 from app.redis.tokens import create_access_token
 from app.redis.doctors.auth import doctor
@@ -23,7 +24,7 @@ class Container(containers.DeclarativeContainer):
 
 @router.post("/auth")
 @inject
-async def auth_hospital(
+async def auth_doctor(
         credentials: DoctorCredentials,
         hospital_repo: DoctorRepository = Depends(Provide[Container.doctors]),
 ) -> dict[str, str | Any]:
@@ -53,6 +54,16 @@ async def one_doctor(
         status_code=UNPROCESSABLE_ENTITY,
         detail="doctor with the given Id not found"
     )
+
+
+@router.get("/doctors")
+@inject
+async def all_doctors(
+        filters: DoctorFilterModel,
+        doctor_repo: DoctorRepository = Depends(Provide[Container.doctors]),
+) -> list[DoctorOut]:
+    doctors = await doctor_repo.filtered_list(filters)
+    return doctors
 
 
 @router.post("/")

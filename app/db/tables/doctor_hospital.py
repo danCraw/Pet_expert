@@ -4,7 +4,7 @@ from app.db.base import metadata
 from app.db.tables.hospitals import hospitals
 from app.db.tables.doctors import doctors
 
-Doctor_hospital = Table(
+doctor_hospital = Table(
                 'doctor_hospital',
                 metadata,
                 Column("doctor_id", Integer, primary_key=True),

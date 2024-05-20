@@ -11,7 +11,7 @@ from app.models.client.base import ClientIn, ClientOut, ClientCredentials, Clien
 from app.models.doctor.base import DoctorIn, DoctorOut
 from app.models.favorite_doctor import FavouriteDoctor
 from app.models.favorite_hospital import FavouriteHospital
-from app.models.hospital import HospitalIn, HospitalOut
+from app.models.hospital.base import HospitalIn, HospitalOut
 from app.models.review import ReviewIn, ReviewOut
 from tests.db.connection import db_connection
 from tests.db.clients.data import db_client

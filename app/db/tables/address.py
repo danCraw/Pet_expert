@@ -3,7 +3,7 @@ from sqlalchemy import Column, String, Table, Integer, ForeignKey
 from app.db.base import metadata
 from app.db.tables.hospitals import hospitals
 
-Address = Table(
+address = Table(
                 'addresses',
                 metadata,
                 Column("id", Integer, primary_key=True),
