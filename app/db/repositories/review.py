@@ -10,7 +10,7 @@ from app.db.tables.doctors import doctors
 from app.db.tables.hospitals import hospitals
 from app.db.tables.reviews import reviews
 from app.db.tables.visits import visits
-from app.models.review import ReviewOut, ReviewIn
+from app.models.review.base import ReviewOut, ReviewIn
 
 
 class ReviewRepository(BaseRepository):

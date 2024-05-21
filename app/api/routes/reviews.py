@@ -11,8 +11,8 @@ from app.db.repositories.hospital import HospitalRepository
 from app.db.repositories.reply import ReplyRepository
 from app.db.repositories.review import ReviewRepository
 from app.db.repositories.visit import VisitRepository
-from app.models.review import ReviewIn
-from app.models.review import ReviewOut
+from app.models.review.base import ReviewIn
+from app.models.review.base import ReviewOut
 
 router = APIRouter()
 

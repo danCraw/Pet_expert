@@ -7,7 +7,7 @@ from app.api.routes.hospitals import register_hospital, delete_hospital, update_
 from app.models.auth.base import IdModel
 from app.models.auth.hospital import UpdateHospital
 from app.models.hospital.base import HospitalIn, HospitalOut, HospitalUpdate
-from app.models.review import ReviewIn, ReviewOut
+from app.models.review.base import ReviewIn, ReviewOut
 from tests.db.connection import db_connection
 from tests.db.clients.data import db_client
 from tests.db.hospitals.data import db_hospital

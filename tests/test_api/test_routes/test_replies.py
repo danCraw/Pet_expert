@@ -6,7 +6,7 @@ from app.models.auth.base import IdModel
 # from app.models.auth.base import IdModel
 from app.models.auth.reply import CreateReply
 from app.models.reply import ReplyIn, ReplyOut
-from app.models.review import ReviewIn
+from app.models.review.base import ReviewIn
 from tests.db.connection import db_connection
 from tests.db.reviews.data import db_review
 from tests.db.replies.data import db_reply

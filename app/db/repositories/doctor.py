@@ -14,7 +14,7 @@ from app.db.tables.reviews import reviews
 from app.db.tables.visits import visits
 from app.models.doctor.base import DoctorOut, DoctorIn
 from app.models.doctor.filters import DoctorFilterModel
-from app.models.review import ReviewOut
+from app.models.review.base import ReviewOut
 
 
 class DoctorRepository(BaseRepository):

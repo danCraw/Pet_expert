@@ -1,10 +1,7 @@
 import pytest_asyncio
 
 from app.api.routes.reviews import delete_review, create_review
-from app.models.review import ReviewIn, ReviewOut
-from tests.db.hospitals.data import db_hospital
-from tests.db.doctors.data import db_doctor
-from tests.db.visits.data import db_visit
+from app.models.review.base import ReviewIn, ReviewOut
 
 
 @pytest_asyncio.fixture

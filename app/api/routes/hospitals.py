@@ -8,10 +8,9 @@ from fastapi import APIRouter, HTTPException, Depends
 
 from app.db.repositories.hospital import HospitalRepository
 from app.db.repositories.review import ReviewRepository
-from app.models.auth.base import IdModel
 from app.models.auth.hospital import UpdateHospital
-from app.models.hospital.base import HospitalCredentials, HospitalIn, HospitalOut, HospitalUpdate
-from app.models.review import ReviewOut
+from app.models.hospital.base import HospitalCredentials, HospitalIn, HospitalOut
+from app.models.review.base import ReviewOut
 from app.redis.tokens import create_access_token
 
 router = APIRouter()

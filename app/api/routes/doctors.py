@@ -1,6 +1,6 @@
 import sys
 from http.client import UNPROCESSABLE_ENTITY
-from typing import Dict, Any
+from typing import Any
 
 from dependency_injector import containers, providers
 from dependency_injector.wiring import inject, Provide
@@ -11,7 +11,7 @@ from app.models.auth.doctor import UpdateDoctor
 from app.models.doctor.base import DoctorIn, DoctorCredentials
 from app.models.doctor.base import DoctorOut
 from app.models.doctor.filters import DoctorFilterModel
-from app.models.review import ReviewOut
+from app.models.review.base import ReviewOut
 from app.redis.tokens import create_access_token
 from app.redis.doctors.auth import doctor
 

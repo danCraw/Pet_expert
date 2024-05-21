@@ -3,10 +3,11 @@ from typing import Any
 
 import pytest
 
-from app.api.routes.doctors import register_doctor, one_doctor, update_doctor, doctor_reviews
+from app.api.routes.doctors import register_doctor, one_doctor, update_doctor, doctor_reviews, all_doctors
 from app.models.auth.doctor import UpdateDoctor
 from app.models.doctor.base import DoctorIn, DoctorOut
-from app.models.review import ReviewOut, ReviewIn
+from app.models.doctor.filters import DoctorFilterModel
+from app.models.review.base import ReviewOut, ReviewIn
 from tests.db.connection import db_connection
 from tests.db.clients.data import db_client
 from tests.db.hospitals.data import db_hospital
@@ -32,6 +33,13 @@ async def test_create(db_connection, doctor):
 @pytest.mark.asyncio
 async def test_read(db_doctor: DoctorIn):
     response = await one_doctor(db_doctor.id)
+    assert response == DoctorOut(**db_doctor.dict())
+
+
+@pytest.mark.asyncio
+async def test_read_all(db_doctor: DoctorIn):
+    filters = DoctorFilterModel()
+    response = await all_doctors(filters)
     assert response == DoctorOut(**db_doctor.dict())
 
 

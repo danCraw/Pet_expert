@@ -6,8 +6,7 @@ from fastapi import HTTPException
 from app.api.routes.reviews import create_review, one_review, delete_review, reviews_list
 from app.db.repositories.doctor import DoctorRepository
 from app.db.repositories.hospital import HospitalRepository
-from app.db.repositories.review import ReviewRepository
-from app.models.review import ReviewIn, ReviewOut
+from app.models.review.base import ReviewIn, ReviewOut
 from tests.db.connection import db_connection
 from tests.db.hospitals.data import db_hospital
 from tests.db.doctors.data import db_doctor
