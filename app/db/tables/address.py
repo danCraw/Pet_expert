@@ -7,7 +7,7 @@ address = Table(
                 'addresses',
                 metadata,
                 Column("id", Integer, primary_key=True),
-                Column("hospital_id", Integer, ForeignKey(hospitals.hospital_id), nullable=False),
+                Column("hospital_id", Integer, ForeignKey(hospitals.c.id), primary_key=True),
                 Column("city", String(65), nullable=False),
                 Column("street", String(65), nullable=False),
                 Column("number", Integer, nullable=False)

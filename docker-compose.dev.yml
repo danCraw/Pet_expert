@@ -19,6 +19,9 @@ services:
       - "6379:6379"
 
   app:
+    depends_on:
+      - postgres
+      - redis
     build: .
     container_name: app-service
     ports:

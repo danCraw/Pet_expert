@@ -7,10 +7,8 @@ from app.db.tables.doctors import doctors
 doctor_hospital = Table(
                 'doctor_hospital',
                 metadata,
-                Column("doctor_id", Integer, primary_key=True),
-                Column("service_id", Integer, nullable=False),
                 Column("start_date", DATE, nullable=False),
                 Column("end_date", DATE, nullable=True),
-                Column("service_id", Integer, ForeignKey(hospitals.id), nullable=False),
-                Column("doctor_id", Integer, ForeignKey(doctors.id), nullable=False)
+                Column("hospital_id", Integer, ForeignKey(hospitals.c.id), nullable=False),
+                Column("doctor_id", Integer, ForeignKey(doctors.c.id), nullable=False)
 )
