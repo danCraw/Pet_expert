@@ -1,4 +1,4 @@
-.PHONY: default build up down
+.PHONY: default build check-build up down up-deps up-app
 
 include .env
 export
@@ -22,3 +22,9 @@ up: check-build
 down:
 	@docker-compose -f docker-compose.dev.yml down
 	@rm -f .build.timestamp
+
+up-deps:
+	@docker-compose -f docker-compose.dev.yml up -d postgres redis
+
+up-app:
+	@docker-compose -f docker-compose.dev.yml up app

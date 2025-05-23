@@ -1,43 +1,32 @@
-version: '3.8'
+  version: '3.8'
 
-services:
-  postgres:
-    image: postgres:15
-    container_name: postgres_pet_expert
-    ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: pet_expert
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
+  services:
+    postgres:
+      build: ./postgresql/
+      container_name: postgres_pet_expert
+      image: library/postgres
+      ports:
+        - "5432:5432"
+      environment:
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=postgres
+        - POSTGRES_DB=pet_expert
 
-  redis:
-    image: redis:latest
-    container_name: redis
-    ports:
-      - "6379:6379"
+    redis:
+      image: redis:latest
+      container_name: redis
+      ports:
+        - "6379:6379"
 
-  app:
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_started
-    build: .
-    container_name: app-service
-    ports:
-      - 8000:8000
-    env_file:
-      - .env
-    command: bash -c "uvicorn app.main:app --reload --host 0.0.0.0 --port 8000"
-    restart: always
-
-volumes:
-  postgres_data:
+    app:
+      depends_on:
+        - postgres
+        - redis
+      build: .
+      container_name: app-service
+      ports:
+        - 8000:8000
+      env_file:
+        - .env
+      command: bash -c "uvicorn app.main:app --reload --host 0.0.0.0 --port 8000"
+      restart: always
